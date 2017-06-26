@@ -1,0 +1,28 @@
+补丁适用范围：
+
+ezOFFICE12.2产品(已集成补丁12.2.0.01）+ evo+1.2
+
+操作步骤：
+
+1、停evo+服务
+
+2、备份生产环境程序
+
+3、覆盖产品补丁包至evo+安装目录中d:\ezwebappp\webapps，删除文件d:\ezwebapp\webapps\defaultroot\WEB-INF\lib\commons-collections-3.2.1.jar
+
+4、连接evo+数据库执行mysql.sql脚本
+
+5、访问evo的二维码地址（地址为evo5.0的环境地址）：
+    
+   http://[ip]:[端口]/mana/manager/app/appDownloadContent
+
+6、二维码截图保存为：clientdownload.png
+
+7、图片clientdownload.png存放路径(evo+环境路径)：
+   /defaultroot/webplatform/images/ver113/client/
+
+8、清除服务端缓存，启动evo服务
+
+9、验证系统功能
+
+注意：如果不使用evo5.0，步骤5、6、7不需要配置。
