@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=0,minimal-ui">
-  <title>论坛</title>
+  <title>发帖</title>
   <link rel="stylesheet" href="/defaultroot/clientview/template/css/template.style.ios.min.css" />
   <link rel="stylesheet" href="/defaultroot/clientview/template/css/template.webapp-style.min.css" /> 
   <style type="text/css">.focum-a .focum-replies .replies-top{background:#fff;}  footer.wh-footer{position:fixed !important;}</style>
@@ -102,7 +102,7 @@
 							<div class="wh-search-input">
 								<form method="get" data-search-list=".list-container" data-search-in=".item-title" class="searchbar searchbar-init nomal-searchbar">
 									<label class="fa fa-search" for="search"></label>
-									<input id="searchBug" name="searchChannelName" type="search" class="nomal-search"placeholder="请输入栏目标题" />
+									<input id="searchBug" name="searchChannelName" type="search" class="nomal-search" placeholder="请输入栏目标题" />
 									<i class="fa fa-times-circle-o"  style="display:none;"  onclick="removeSearchInput()"></i>
 								</form>
 							</div>
@@ -123,7 +123,7 @@
 				<div class="wh-container">
 					<div class="wh-footer-btn row">
 						<div class="webapp-footer-linebtn">
-							<div class="fl clearfix" id="comButton" style="display:none">
+							<div class="fl clearfix" id="comButton">
 								<a href="javascript:clearSelect();" class="panel-return-a">清空</a>
 								<a href="javascript:confirmSelect();" class="panel-send-a">确定</a>
 							</div>
@@ -136,7 +136,7 @@
     </div>
   </div>
 
-    
+  
   <script type="text/javascript" src="/defaultroot/clientview/template/js/template.min.js"></script>
   <script type="text/javascript" src="/defaultroot/scripts/jquery-1.8.0.min.js"></script>
   <script type="text/javascript" src="/defaultroot/clientview/js/ajaxfileupload.js"></script>
@@ -150,11 +150,19 @@
   });
   var $$ = Dom7;
 
-   //  点击显示表情
-   $$(".section-focum-replies .smile .tab").css({"height":"0"})
-   $$(".smile .tab-title a").click(function(){
-   $$(".section-focum-replies .smile .tab").css({"height":"9.5rem"})
-   });
+  	//  点击显示表情
+  	$$(".section-focum-replies .smile .tab").css({"height":"0"});//开始默认表情框高度为0
+  	$$(".smile .tab-title a").click(function(){
+  		if($(".tab-title").hasClass("intro")){
+  			$(".tab-title").removeClass("intro");
+  			$$(".section-focum-replies .smile .tab").css({"height":"0"});
+  		}else{
+  			$(".tab-title").addClass("intro");
+  			$$(".section-focum-replies .smile .tab").css({"height":"9.5rem"});
+  		}
+  		
+  	});
+   
    //底部 实名 匿名单选按钮
    $$(".footr-d-select ul li").click(function(){
          $$(".footr-d-select ul li").removeClass("on");
@@ -165,18 +173,19 @@
    var selftFlag = 0; //第一次点击选模块标识
 	//打开选择板块页面
 	function selColumn(){
+		//alert("1111");
 		//myApp.showPreloader('加载板块中...');
-		var selectClassId = $$("#classId").val();
-		var searchClassName = $$("#searchBug").val();
-		var classNameSel = $$("#className").val();
-		if(selftFlag == 0){
-			$("#footerButton").attr("style","position: fixed;display:inline-block");
-		}
+		var selectClassId = $$("#classId").val();//已选择栏目id
+		var searchClassName = $$("#searchBug").val();//查询的栏目名称
+		var classNameSel = $$("#className").val();//已选择栏目名称
+		//if(selftFlag == 0){
+		//	$("#footerButton").attr("style","position: fixed;display:inline-block");
+		//}
 		selftFlag = 1; 
 		$.ajax({
 			url : '/defaultroot/post/selectcolumn.controller',
 			type : "post",
-			data : {"classId" : selectClassId,"searchClassName" : searchClassName},
+			data : {"selectClassId" : selectClassId,"searchClassName" : searchClassName},
 			success : function(data){
 				var jsonData = eval("("+data+")");
 				if(jsonData.data0.length == 0 && selFLag == 0){
@@ -184,6 +193,7 @@
 		      		myApp.alert('没有可选择的板块');
 		      		return false;
 		      	}
+		      	//alert("2222");
 		      	var html = '';
 		      	var write = '';
 				var loadSubSec = '';
@@ -360,14 +370,14 @@
 	function hiddenContent(flag){
 		if(flag==0){
 			$$("#mainContent").css("display","none");
-			$$("#criteButton").css("display","none");
-			$$("#comButton").css("display","block");
+			//$$("#criteButton").css("display","none");
+			$$("#footerButton").css("display","block");
 			$$("#selectContent").css("display","block");
 		}else if(flag==1){
 			$$("#selectContent").css("display","none");
 			$$("#mainContent").css("display","block");
-			$$("#criteButton").css("display","block");
-			$$("#comButton").css("display","none");
+			//$$("#criteButton").css("display","block");
+			$$("#footerButton").css("display","none");
 		}
 	}
 
@@ -418,7 +428,7 @@
 
 	//图片数标记
     var index = 0;
-   
+    var imgnum = 0;
     //添加图片
     function addImg(){
 	   $(".edit-upload-in").before(       
@@ -448,7 +458,7 @@
 	   if($("#num").html() == 0){
 		   $("#num").attr("style","display:none");
 	   }
-	   index = index -1;
+	   imgnum = imgnum -1;
     }
 	
 	//回调函数上传图片
@@ -462,11 +472,12 @@
 			fileElementId: upImgId, //文件上传域的ID
 			dataType: 'json', //返回值类型 一般设置为json
 			success: function (msg, status){  //服务器成功响应处理函数---获取上传图片保存名
+				imgnum++;
 				$("#img_save_name_"+(index-1)).val(msg.data);
 				$("#img_name_"+(index-1)).val(fileShowName);
 				$("#"+imgliId).show();
 				$("#num").attr("style","display:inline-block");
-				$("#num").html(index);
+				$("#num").html(imgnum);
 				myApp.hidePreloader();
 			},
 			error: function (data, status, e){//服务器响应失败处理函数

@@ -47,8 +47,8 @@
                         <div class="wh-search-input">
                           <form method="get" data-search-list=".list-container" data-search-in=".item-title" class="searchbar searchbar-init nomal-searchbar">
                             <label class="fa fa-search" for="search"></label>
-                            <input id="searchDeal" type="search" class="nomal-search" placeholder="请输入流程标题查询" />
-                            <a href="#" class="searchbar-cancel" onclick="removeSearch(this);loadDealFileList('/defaultroot/dealfile/getListData.controller','0');">取消</a>
+                            <input id="searchDeal" type="search" class="nomal-search" placeholder="请输入流程标题查询" onfocus ="show('1');"/>
+							<i class="fa fa-times-circle-o receiveWeek" id="cancel1"  style="display:none;"  onclick="removeSearch(this);loadDealFileList('/defaultroot/dealfile/getListData.controller','0');hide('1');"></i>
                           </form>
                         </div>
                       </div>
@@ -80,8 +80,8 @@
                         <div class="wh-search-input">
                           <form method="get" data-search-list=".list-container" data-search-in=".item-title" class="searchbar searchbar-init nomal-searchbar">
                             <label class="fa fa-search" for="search"></label>
-                            <input id="searchRead" type="search" class="nomal-search" placeholder="请输入流程标题查询" />
-                            <a href="#" class="searchbar-cancel" onclick="removeSearch(this);loadDealFileReadList('/defaultroot/dealfile/getListData.controller','0');">取消</a>
+                            <input id="searchRead" type="search" class="nomal-search" placeholder="请输入流程标题查询" onfocus ="show('2');"/>
+							<i class="fa fa-times-circle-o receiveWeek" id="cancel2"  style="display:none;"  onclick="removeSearch(this);loadDealFileReadList('/defaultroot/dealfile/getListData.controller','0');hide('2');"></i>
                           </form>
                         </div>
                       </div>
@@ -135,8 +135,8 @@
                         <div class="wh-search-input">
                           <form method="get" data-search-list=".list-container" data-search-in=".item-title" class="searchbar searchbar-init nomal-searchbar">
                             <label class="fa fa-search" for="search"></label>
-                            <input id="searchDealed" type="search" class="nomal-search" placeholder="请输入流程标题查询" />
-                            <a href="#" class="searchbar-cancel" onclick="removeSearch(this);loadDealFileDealedList('/defaultroot/dealfile/getListData.controller','0');">取消</a>
+                            <input id="searchDealed" type="search" class="nomal-search" placeholder="请输入流程标题查询" onfocus ="show('3');"/>                         
+							<i class="fa fa-times-circle-o receiveWeek" id="cancel3"  style="display:none;"  onclick="removeSearch(this);loadDealFileDealedList('/defaultroot/dealfile/getListData.controller','0');hide('3');"></i>
                           </form>
                         </div>
                       </div>
@@ -168,8 +168,8 @@
                         <div class="wh-search-input">
                           <form method="get" data-search-list=".list-container" data-search-in=".item-title" class="searchbar searchbar-init nomal-searchbar">
                             <label class="fa fa-search" for="search"></label>
-                            <input id="searchReaded" type="search" class="nomal-search" placeholder="请输入流程标题查询" />
-                            <a href="#" class="searchbar-cancel" onclick="removeSearch(this);loadDealFileDealedReadList('/defaultroot/dealfile/getListData.controller','0');">取消</a>
+                            <input id="searchReaded" type="search" class="nomal-search" placeholder="请输入流程标题查询" onfocus ="show('4');"/>
+							<i class="fa fa-times-circle-o receiveWeek" id="cancel4"  style="display:none;"  onclick="removeSearch(this);loadDealFileDealedReadList('/defaultroot/dealfile/getListData.controller','0');hide('4');"></i>
                           </form>
                         </div>
                       </div>
@@ -208,8 +208,8 @@
                   <div class="wh-search-input">
                     <form method="get" data-search-list=".list-container" data-search-in=".item-title" class="searchbar searchbar-init nomal-searchbar">
                       <label class="fa fa-search" for="search"></label>
-                      <input id="searchMy" type="search" class="nomal-search" placeholder="请输入流程标题查询" />
-                      <a href="#" class="searchbar-cancel" onclick="removeSearch(this);loadDealFileMyList('/defaultroot/dealfile/getListData.controller','0');">取消</a>
+                      <input id="searchMy" type="search" class="nomal-search" placeholder="请输入流程标题查询" onfocus ="show('5');"/>                    
+					  <i class="fa fa-times-circle-o receiveWeek" id="cancel5"  style="display:none;"  onclick="removeSearch(this);loadDealFileMyList('/defaultroot/dealfile/getListData.controller','0');hide('5');"></i>
                     </form>
                   </div>
                 </div>
@@ -270,8 +270,8 @@
                         <div class="wh-search-input">
                           <form method="get" data-search-list=".list-container" data-search-in=".item-title" class="searchbar searchbar-init nomal-searchbar">
                             <label class="fa fa-search" for="search"></label>
-                            <input id="searchAll" type="search" class="nomal-search" placeholder="请输入流程标题查询" />
-                            <a href="#" class="searchbar-cancel" onclick="removeSearch(this);listFlowData('/defaultroot/workflow/listFlowData.controller','0');">取消</a>
+                            <input id="searchAll" type="search" class="nomal-search" placeholder="请输入流程标题查询" onfocus ="show('6');"/>
+							<i class="fa fa-times-circle-o receiveWeek" id="cancel6"  style="display:none;"  onclick="removeSearch(this);listFlowData('/defaultroot/dealfile/getListData.controller','0');hide('6');"></i>
                           </form>
                         </div>
                       </div>
@@ -1429,9 +1429,42 @@
     }
 
     // 搜索焦点时
-    $$('#fbtn-save').on('click', function() {
-	  $$(this).next('.searchbar-cancel').show();
-    })
+    //$$('#fbtn-save').on('click', function() {
+	  //$$(this).next('.searchbar-cancel').show();
+    //})
+    //搜索框取消图标
+	function show(val){
+		if(val == '1'){
+			$("#cancel1").show();
+		}if(val == '2'){
+			$("#cancel2").show();
+		}if(val == '3'){
+			$("#cancel3").show();
+		}if(val == '4'){
+			$("#cancel4").show();
+		}if(val == '5'){
+			$("#cancel5").show();
+		}if(val == '6'){
+			$("#cancel6").show();
+		}
+	}
+
+	function hide(val){
+		if(val == '1'){
+			$("#cancel1").hide();
+		}if(val == '2'){
+			$("#cancel2").hide();
+		}if(val == '3'){
+			$("#cancel3").hide();
+		}if(val == '4'){
+			$("#cancel4").hide();
+		}if(val == '5'){
+			$("#cancel5").hide();
+		}if(val == '6'){
+			$("#cancel6").hide();
+		}
+	}
+
     //改变页签标记
 	function change(val){
 		if(val == '0'){

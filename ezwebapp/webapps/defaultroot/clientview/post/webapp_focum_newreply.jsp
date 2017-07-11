@@ -129,6 +129,7 @@
     });
 
      var index = 0;
+	 var imgnum = 0;
     //添加图片
     function addImg(){
 	   $(".edit-upload-in").before(       
@@ -158,7 +159,7 @@
 	   if($("#num").html() == 0){
 		  $("#num").attr("style","display:none");
 	   }
-	   index = index -1;
+	   imgnum = imgnum -1;
     }
 	
 	//回调函数上传图片
@@ -173,12 +174,13 @@
 			dataType: 'json', //返回值类型 一般设置为json
 			success: function (msg, status){  //服务器成功响应处理函数---获取上传图片保存名
 				//alert(1);
+				imgnum++;
 				$("#img_save_name_"+(index-1)).val(msg.data);
 				$("#img_save_name_"+(index-1)).data("filesize",msg.fileSize);
 				$("#img_name_"+(index-1)).val(fileShowName);
 				$("#"+imgliId).show();
 				$("#num").attr("style","display:inline-block");
-				$("#num").html(index);
+				$("#num").html(imgnum);
 				myApp.hidePreloader();
 			},
 			error: function (data, status, e){//服务器响应失败处理函数

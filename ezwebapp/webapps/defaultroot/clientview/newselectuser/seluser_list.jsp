@@ -926,9 +926,18 @@
 				        	if(personArray[j].sex == 1){
 				        		sexClass = "lady";
 				        	}
+				        	var ussp = '<span>'+personArray[j].userName+'</span>';
+				        	if(range != "*0*"){
+				        		var orgNameStr =  personArray[j].orgNameString;
+				        		orgNameStr =  orgNameStr.substring(orgNameStr.lastIndexOf('.') + 1);
+				        		if(orgNameStr.length > 8){
+				        			orgNameStr = orgNameStr.substring(0,8)+'...';
+				            	}
+				        		ussp = '<span>'+personArray[j].userName+'['+orgNameStr+']</span>';
+				        	}
 				        	personLis +='<li id='+liId+'  data-empid='+personArray[j].userId+","+' data-empname='+personArray[j].userName+','+'   class="'+sexClass+' '+liId+'">'
 	                           		  +'<a href="">'
-	                              	  +'<span>'+personArray[j].userName+'</span>'
+	                              	  +ussp
 	                           		  +'</a>'
 	                      			  +'</li>';
 				        }

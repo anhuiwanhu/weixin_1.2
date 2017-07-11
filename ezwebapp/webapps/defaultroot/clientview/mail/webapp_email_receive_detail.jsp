@@ -133,9 +133,9 @@
 				<tr>
 					<%
 						newContent = (String)pageContext.getAttribute("content");
-						System.out.print("newContent11111--------->"+newContent);
+						//System.out.print("newContent11111--------->"+newContent);
 						newContent = newContent.replaceAll("<SCRIPT[^>]*>[\\d\\D]*?</SCRIPT>","").replaceAll("<script[^>]*>[\\d\\D]*?</script>","").replaceAll("\"","'");
-						System.out.print("newContent22222--------->"+newContent);
+						//System.out.print("newContent22222--------->"+newContent);
 						String mailsubject = (String)pageContext.getAttribute("mailsubject");
 						mailsubject = mailsubject.replace("\n","");
 					%>

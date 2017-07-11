@@ -26,3 +26,94 @@ ezOFFICE12.2产品(已集成补丁12.2.0.01）+ evo+1.2
 9、验证系统功能
 
 注意：如果不使用evo5.0，步骤5、6、7不需要配置。
+
+
+
+
+
+
+
+
+
+
+补丁适用范围：
+
+ezOFFICE12.2产品(已集成补丁至12.2.0.03）+ evo+1.2.1
+
+操作步骤：
+
+1、停evo+服务
+
+2、备份生产环境程序
+
+3、覆盖产品补丁包至evo+安装目录中d:\ezwebapp
+
+4、连接evo+mysql数据库执行mysql.sql脚本文件
+
+5、删掉：..\webapps\defaultroot\WEB-INF\lib下的jar包：
+   jackson-mapper-lgpl-1.2.1.jar
+
+6、..\webapps\defaultroot\WEB-INF\web.xml文件中加：
+<filter>  
+		<filter-name>AuthFilter</filter-name>  
+		<filter-class>com.whir.common.AuthFilter</filter-class>  
+  </filter>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.html</url-pattern>  
+  </filter-mapping>  
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.htm</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.jpg</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.doc</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.docx</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.xlsx</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.xls</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.png</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.gif</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.pdf</url-pattern>  
+  </filter-mapping>
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.txt</url-pattern>  
+  </filter-mapping>
+
+7、首先登陆移动管理后台，然后另起一个浏览器页签执行同步链接：
+http://[IP地址]:[端口]/defaultroot/clientlplatform/synData.controller
+ip和端口为evo+的环境地址，页面打印1表示同步成功。
+
+8、清除服务端缓存，启动evo服务
+
+9、验证系统功能
+
+备注：如果使用收费版本永中，以下参数请按照下面格式配置：
+（1）永中配置文件dcs.web\WEB-INF\config.properties中找到以下内容：
+#目标文件路径
+dir.output=E:\\DCS\\sampledoc\\output
+把上面路径改为evo+服务defaultroot\upload\根目录下
+（2）永中服务需要和evo+服务部署在同一台机器上。

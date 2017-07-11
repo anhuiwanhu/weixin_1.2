@@ -35,13 +35,13 @@
         <%
 			String showCotent = (String)pageContext.getAttribute("showCotent");
 			showCotent = showCotent.replaceAll("&lt;br&gt;","\r\n");
-			System.out.println("showCotent------------>"+showCotent);
+			//System.out.println("showCotent------------>"+showCotent);
 		%>
 		<c:set var="workCotent"><x:out select="$doc//leaderEvent/workCotent/text()"/></c:set>
 		<%
 			String workCotent = (String)pageContext.getAttribute("workCotent");
 			workCotent = workCotent.replaceAll("&lt;br&gt;","\r\n");
-			System.out.println("workCotent------------>"+workCotent);
+			//System.out.println("workCotent------------>"+workCotent);
 		%>
 		<c:set var="echoMode"><x:out select="$doc//leaderEvent/echoMode/text()"/></c:set>
 		<c:set var="echoBeginDate"><x:out select="$doc//leaderEvent/echoBeginDate/text()"/></c:set>

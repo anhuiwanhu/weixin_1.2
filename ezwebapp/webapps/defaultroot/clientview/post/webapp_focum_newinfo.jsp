@@ -35,7 +35,7 @@
 			<%
           	//处理论坛版块名称过长
           	String forumClassName_new = (String)pageContext.getAttribute("forumClassName");
-          	System.out.print("forumClassName------->"+forumClassName_new);
+          	//System.out.print("forumClassName------->"+forumClassName_new);
           	if(forumClassName_new == null){
           		forumClassName_new = "";
           	}else{
@@ -65,7 +65,8 @@
 								<c:set var="curName" ><x:out select="$n/nickName/text()"/></c:set> 
 							</c:if>
 							<c:set var="authorPhoto"><c:out value="${authorPhotoArr[status.index]}"/></c:set>
-							<%  String pic=(String)pageContext.getAttribute("authorPhoto");
+							<%  
+								String pic=(String)pageContext.getAttribute("authorPhoto");
 								String photoPath = "";
 								if(null != pic && !pic.equals("") && !"null".equals(pic)){
 									photoPath = "/defaultroot/upload/peopleinfo/"+pic;
@@ -74,7 +75,8 @@
 								}
 								if("1".equals((String)pageContext.getAttribute("anonymous"))) {
 									photoPath = "/defaultroot/clientview/images/user3.png";
-							} %>
+								} 
+							%>
 							<c:set var="floor" >${(status.index+1)+(offset-1)*15}</c:set>
 							<c:set var="floorName" >${floor-1}楼</c:set>
 							<c:if test="${floor == 1}">
@@ -107,7 +109,7 @@
 								if(sign.equals("null")){
 									sign = "";
 								}
-								System.out.println("sign---------------->"+sign);
+								//System.out.println("sign---------------->"+sign);
 								sign = com.whir.util.RegularUtils.replaceAllImages(sign);
 								sign = com.whir.util.RegularUtils.candownloadHtmlfile(sign);
 								
@@ -146,11 +148,11 @@
 									<c:set var="savenames" ><x:out select="$n/forumAttachSave/text()"/></c:set>
 									<%
 										String savenames = (String)pageContext.getAttribute("savenames");
-										System.out.println("cs0---"+savenames);
+										//System.out.println("cs0---"+savenames);
 										String[] snames = savenames.split("\\|");
 										for(int i = 0; i < snames.length; i++){
 											if(snames[i] != null && !snames[i].equals("")){
-											System.out.println("cs---"+snames[i]);
+											//System.out.println("cs---"+snames[i]);
 												String fileType  = snames[i].substring(snames[i].lastIndexOf("."));
 	    										fileType = fileType .toLowerCase();
 												if(".jpg".equals(fileType.toLowerCase()) || ".png".equals(fileType.toLowerCase()) || ".jpeg".equals(fileType.toLowerCase()) || ".bmp".equals(fileType.toLowerCase())){
@@ -192,7 +194,7 @@
 									 </c:if>
 								</x:if>
                            </div>
-						   <form action="/defaultroot/post/reply.controller" id="toReplyForm_${id}" method="get">
+						   <form action="/defaultroot/post/reply.controller" id="toReplyForm_${id}" method="post">
 								<input type="hidden" value="${postId}" name="postId"/>
 								<input type="hidden" value="${content}" name="content"/>
 								<input type="hidden" value="${floor}" name="forumFloor"/>
@@ -251,6 +253,14 @@
 	var recordCount = '${recordCount}';
 	var loading = false;
 	$(function(){
+		
+		//回复引用后返回该页面做出是否需要审核判断
+		var checkexamin = '${param.checkexamin}';
+		if(checkexamin == '1'){
+			myApp.alert("回复或引用后的帖子需要版主审核！");
+		}
+		
+		
 		nomore = $("#nomore").val();
 		offset = $("#offset").val();
 		if(nomore){

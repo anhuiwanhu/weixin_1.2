@@ -29,8 +29,8 @@
         <div>
           <label> 客户端下载地址：</label>
           <input type="text" name="clientDownloadAddress" id="clientDownloadAddress" value="" style="width:280px;" readonly="readonly" />
-          <a href="javascript:openDownloadUrl();" class="mobile-btn-suqare">打开</a>
-          <a href="javascript:QrCodeIsGenerated();" class="mobile-btn-suqare">生成二维码</a>
+          <a href="javascript:openDownloadUrl();" class="mobile-btn-suqare">生成二维码</a>
+       <!--   <a href="javascript:QrCodeIsGenerated();" class="mobile-btn-suqare">生成二维码</a>  --> 
         </div>
       </div>
     </div>
@@ -238,7 +238,7 @@
   <!--生成二维码-->
   <div id="clien-download"  class="layer-modal client-info">
 	<div class="client-info-div" align="center">
-      <img src="<%=realpath%>/webplatform/images/ver113/client/clientdownload.png">
+      <img id="twoDimenseCode" src="<%=realpath%>/webplatform/images/ver113/client/clientdownload.png">
     </div>
   </div>
   
@@ -330,7 +330,8 @@
 	function openManaUrl(){
 		var manaUrl = $('#manaConsole').val();
 		if(manaUrl != ''){
-			window.location = manaUrl;
+		//	window.location = manaUrl;
+			window.open(manaUrl);
 		}else{
 			whir_alert1("提示信息","未提供正确的mana控制台链接地址！","确定");
 		}
@@ -342,7 +343,8 @@
 		//var downloadUrl = 'http://192.168.0.64:9090/mana/a/install';
 		var downloadUrl = $('#clientDownloadAddress').val();
 		if(downloadUrl != ''){
-			window.location = downloadUrl;
+			//window.location = downloadUrl;
+			window.open(downloadUrl);
 		}else{
 			whir_alert1("提示信息","未提供正确的客户端下载链接地址！","确定");
 		}
@@ -350,7 +352,38 @@
 
 	//生成二维码
 	function QrCodeIsGenerated(){
-		layer.open({
+		var clientDownloadAddress = $("#clientDownloadAddress").val();
+		if(clientDownloadAddress==null||clientDownloadAddress==""){
+			alert("未提供正确的客户端下载链接地址!");
+			return;
+		}
+		$.ajax({
+			 url : "/defaultroot/twoDeimensionCode/getlogonimg.controller",    
+			 type : "POST",    
+			 dataType:"json",
+			 data : { "ClientUrl": $("#clientDownloadAddress").val() },    
+			 success : function(data) {
+				 var timestr =data.timestr; 
+				 if(timestr==null||timestr==""){
+					 alert("获取二维码失败，请重新获取！");
+					 return;
+			     }
+				 $("#twoDimenseCode").attr('src',"<%=realpath%>/upload/webplatform/"+timestr+".jpg");
+				 layer.open({
+						type: 1,
+						title: '<i class="fa fa-tips"></i>客户端二维码',
+						shadeClose: false,
+						shade: 0,
+						area: ['470px', ' '],
+						btn: ['关闭'],
+						closeBtn: 0,
+						content: $("#clien-download")
+					});
+			 },    
+			 error : function(data) {
+			 }    
+		 });
+	/*	layer.open({
 			type: 1,
 			title: '<i class="fa fa-tips"></i>客户端二维码',
 			shadeClose: false,
@@ -359,7 +392,7 @@
 			btn: ['关闭'],
 			closeBtn: 0,
 			content: $("#clien-download")
-		});
+		});  */
 	}
 
 	/*********加载应用主页列表开始***********/

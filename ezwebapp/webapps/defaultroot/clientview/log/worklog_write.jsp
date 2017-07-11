@@ -149,11 +149,13 @@
                     </tr>
                     <tr>
                       <th>项目名称：</th>
-                      <td id="protd">
+                      <td>
                         <!-- <input class="edit-ipt-r edit-ipt-arrow" type="text" maxlength="50" name="projectName" value="${projectName }" id="projectName" readonly="readonly" placeholder="请选择&nbsp;" onclick="selPro()"/> -->
-                        <c:if test="${projectName!='null' }"> ${projectName }</c:if>
-                        <c:if test="${empty projectName || projectName == 'null' }">
-                        <input class="edit-ipt-r edit-ipt-arrow" type="text" readonly placeholder="请选择" onclick="selPro()"/>
+                        <c:if test="${projectName!=null && projectName!=''}"> 
+                        <input id="protd" value="${projectName }" class="edit-ipt-r edit-ipt-arrow" type="text" readonly placeholder="请选择" onclick="selPro()"/>
+                        </c:if>
+                        <c:if test="${empty projectName || projectName == null }">
+                        <input id="protd" class="edit-ipt-r edit-ipt-arrow" type="text" readonly placeholder="请选择" onclick="selPro()"/>
                         </c:if>
                       </td>
                     </tr>

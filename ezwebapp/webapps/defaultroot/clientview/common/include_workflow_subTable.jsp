@@ -160,33 +160,24 @@ String nowDate = sdf.format(date);
 						
 														<%--日期 107--%>
 														<c:when test="${showtype =='107' && readwrite =='1'}">
-															<x:forEach select="$field//dataList/val" var="selectvalue" >
-																<c:set var="showVal"><x:out select="$selectvalue/showval/text()"/></c:set>
-															</x:forEach>
 															<div class="edit-ipt-a-arrow">
-																<input data-dateType="date" class="edit-ipt-r edit-ipt-arrow" type="text" id='<x:out select="$field/sysname/text()"/>_${subFieldsNum}' name='_sub_<x:out select="$field/sysname/text()"/>' value='${showVal}' placeholder="选择日期" readonly/>
+																<input data-dateType="date" class="edit-ipt-r edit-ipt-arrow" type="text" id='<x:out select="$field/sysname/text()"/>_${subFieldsNum}' name='_sub_<x:out select="$field/sysname/text()"/>' value='<x:out select="$field/value/text()"/>' placeholder="选择日期" readonly/>
 																<label class="edit-ipt-label" for="scroller"></label>
 															</div>
 														</c:when>
 						
 														<%--时间 108--%>
 														<c:when test="${showtype =='108' && readwrite =='1'}">
-															<x:forEach select="$field//dataList/val" var="selectvalue" >
-																<c:set var="showVal"><x:out select="$selectvalue/showval/text()"/></c:set>
-															</x:forEach>
 															<div class="edit-ipt-a-arrow">
-																<input data-dateType="time" class="edit-ipt-r edit-ipt-arrow" type="text" id='<x:out select="$field/sysname/text()"/>_${subFieldsNum}' name='_sub_<x:out select="$field/sysname/text()"/>' value='${showVal}' placeholder="选择时间" readonly/>
+																<input data-dateType="time" class="edit-ipt-r edit-ipt-arrow" type="text" id='<x:out select="$field/sysname/text()"/>_${subFieldsNum}' name='_sub_<x:out select="$field/sysname/text()"/>' value='<x:out select="$field/value/text()"/>' placeholder="选择时间" readonly/>
 																<label class="edit-ipt-label" for="scroller"></label>
 															</div>
 														</c:when>
 						
 														<%--日期 时间 109--%>
 														<c:when test="${showtype =='109' && readwrite =='1'}">
-															<x:forEach select="$field//dataList/val" var="selectvalue" >
-																<c:set var="showVal"><x:out select="$selectvalue/showval/text()"/></c:set>
-															</x:forEach>
 															<div class="edit-ipt-a-arrow">
-																<input data-dateType="datetime" class="edit-ipt-r edit-ipt-arrow" type="text" id='<x:out select="$field/sysname/text()"/>_${subFieldsNum}' name='_sub_<x:out select="$field/sysname/text()"/>' value='${showVal}' placeholder="选择日期时间" readonly/>
+																<input data-dateType="datetime" class="edit-ipt-r edit-ipt-arrow" type="text" id='<x:out select="$field/sysname/text()"/>_${subFieldsNum}' name='_sub_<x:out select="$field/sysname/text()"/>' value='<x:out select="$field/value/text()"/>' placeholder="选择日期时间" readonly/>
 																<label class="edit-ipt-label" for="scroller"></label>
 															</div>
 														</c:when>
