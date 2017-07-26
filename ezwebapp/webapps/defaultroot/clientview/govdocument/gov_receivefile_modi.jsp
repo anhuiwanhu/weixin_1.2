@@ -6,6 +6,7 @@
 <%@ page import="java.lang.*"%>
 <%@ page import="org.apache.commons.lang.StringUtils"%>
 <%@ page import="com.whir.component.security.crypto.EncryptUtil"%>
+<%@ page import="com.whir.aop.WebAppAuth"%>
 <%
 String workId = EncryptUtil.sqlcode(EncryptUtil.htmlcode(request.getParameter("workId")));//request.getParameter("workId");
 String orgId = session.getAttribute("orgId").toString();
@@ -63,23 +64,30 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 				<c:set var="ezflow_activityTip"><x:out select="$doc//workInfo/ezflow_activityTip/text()"/></c:set>
 		        <c:set var="ezflow_activityTipCotent"><x:out select="$doc//workInfo/ezflow_activityTipCotent/text()"/></c:set>
 		        <c:set var="ezflow_activityTipTitle"><x:out select="$doc//workInfo/ezflow_activityTipTitle/text()"/></c:set>
-
+				<c:set var="hiddenFieldString"><x:out select="$doc//workInfo/hiddenFieldString/text()"/></c:set>
 				<div id="dealTipsContent" style="display:none">${dealTipsContent}</div>
                 <div id="tab11" class="tab active">
                   <div class="form-table">
-					<form id="sendForm" action="/defaultroot/workflow/sendnew.controller?modibutton=<%=(String)pageContext.getAttribute("modibutton") %>&isDossier=<%=(String)pageContext.getAttribute("isDossier") %>&govType=receivefile" method="post">
+					<form id="sendForm" action="/defaultroot/workflow/sendnew.controller?modibutton=<%=(String)pageContext.getAttribute("modibutton") %>&isDossier=<%=(String)pageContext.getAttribute("isDossier") %>&govType=receivefile" method="post"  >
 							<input type="hidden" name="fromFlag" value="<%=fromFlag%>">
+							<!-- pdf批注 -->
+							<input type="hidden" id="oaPdf" name="oaPdf" value="0"/>
+							<input type="hidden" id="pdfzhpzsj" name="pdfzhpzsj" value="0"/>
+							<input type="hidden" id="pdfpzr" name="pdfpzr" value="0"/>
+							<input type="hidden" id="pdfpzhj" name="pdfpzhj" value="0"/>
+							<input type="hidden" id="pdfid" name="pdfid" value="0"/>
+							<input type="hidden" id="pdfgwlx" name="pdfgwlx" value="0"/>
+							
 							<table style="border-collapse:separate;border-spacing: 0 5px;">
 								<%
 									List govDocFormList = new ArrayList();
 									govDocFormList  = (List)request.getAttribute("govDocFormList");
+									String hiddenFieldString = (String)pageContext.getAttribute("hiddenFieldString");   //需要隐藏的字段
 									for(int i=0;i<govDocFormList.size();i++){
 										Map _map = (Map) govDocFormList.get(i);
 										//System.out.println("----keyId-"+_map.get("keyId")+"-name-"+_map.get("name")+"-text-"+_map.get("text"));
-
-										if("receiveDate".equals(_map.get("keyId"))||
-											"createdTime".equals(_map.get("keyId"))){     //来文日期、创建日期
-
+										if(("receiveDate".equals(_map.get("keyId"))||
+											"createdTime".equals(_map.get("keyId"))) && hiddenFieldString.indexOf((String)_map.get("sourcecode"))==-1){     //来文日期、创建日期
 											if("true".equals(_map.get("canEdit"))){    
 							%>	
 												<tr>
@@ -100,8 +108,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												</tr>
 							<%
 											}
-										
-										}else if("fileUnit".equals(_map.get("keyId"))){     //来文单位
+										}else if("fileUnit".equals(_map.get("keyId")) && hiddenFieldString.indexOf((String)_map.get("sourcecode"))==-1){     //来文单位
 							                if("true".equals(_map.get("canEdit"))){
 							%>	
 												<tr>
@@ -120,7 +127,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												</tr>
 							<%
 											}
-										}else if("fileNumber".equals(_map.get("keyId"))){   //文号
+										}else if("fileNumber".equals(_map.get("keyId")) && hiddenFieldString.indexOf((String)_map.get("sourcecode"))==-1){   //文号
                                             if("true".equals(_map.get("canEdit"))){
 							%>	
 												<tr>
@@ -140,7 +147,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												</tr>
 							<%
 											}
-										}else if("title".equals(_map.get("keyId"))){    //标题
+										}else if("title".equals(_map.get("keyId")) && hiddenFieldString.indexOf((String)_map.get("sourcecode"))==-1){    //标题
                                             if("true".equals(_map.get("canEdit"))){
 							%>	
 												<tr>
@@ -160,12 +167,11 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												</tr>
 							<%
 											}
-										}else if("safetyGrade".equals(_map.get("keyId"))||
+										}else if(("safetyGrade".equals(_map.get("keyId"))||
 											     "zjkyType".equals(_map.get("keyId"))||
 											     "zjkykeepTerm".equals(_map.get("keyId"))||
 											     "fileType".equals(_map.get("keyId"))||
-											     "field4".equals(_map.get("keyId"))){     //秘密级别、文种、保管期限、文件归类、紧急程度
-
+											     "field4".equals(_map.get("keyId"))) && hiddenFieldString.indexOf((String)_map.get("sourcecode"))==-1){     //秘密级别、文种、保管期限、文件归类、紧急程度
                                             if("true".equals(_map.get("canEdit"))){
 							%>	
 												<tr>
@@ -182,18 +188,14 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 							                                  String text = _map.get("text")+"";
 															  if(datavalue!=null){
 																  String[] datavalues = datavalue.split(";");
-		
 																  if(datavalues.length>0){
 																	 String selected = "";
 																     for(int kk=0;kk < datavalues.length;kk++){
-
 																		 selected = "";
-
 																		 if(text.equals(datavalues[kk])) selected = " selected='true' ";
 																	     out.print("<option value='"+datavalues[kk]+"' "+selected+">"+datavalues[kk]+"</option>");
 																	 }
 																  }
-																 
 															  }
 															%>
 														</select>
@@ -209,7 +211,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												</tr>
 							<%
 											}
-										}else if("quantity".equals(_map.get("keyId"))){      //份数
+										}else if("quantity".equals(_map.get("keyId")) && hiddenFieldString.indexOf((String)_map.get("sourcecode"))==-1){      //份数
 								              if("true".equals(_map.get("canEdit"))){
 							%>	
 												<tr>
@@ -229,7 +231,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												</tr>
 							<%
 											}
-										}else if("doComment".equals(_map.get("keyId"))){       //批示内容
+										}else if("doComment".equals(_map.get("keyId")) && hiddenFieldString.indexOf((String)_map.get("sourcecode"))==-1){       //批示内容
                                             if("true".equals(_map.get("canEdit"))){
 							%>	
 												<tr>
@@ -249,18 +251,15 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												</tr>
 							<%
 											}
-										}else if("zjkySeq".equals(_map.get("keyId"))){              //流水号
+										}else if("zjkySeq".equals(_map.get("keyId")) && hiddenFieldString.indexOf((String)_map.get("sourcecode"))==-1){              //流水号
 							%>	
 												<tr>
 													<td><span><%=_map.get("name")%></span></td>
 													<td><p><%=_map.get("text")==null?"":_map.get("text")%></p></td>
 												</tr>
-										
 							<%			}else if("commentList".equals(_map.get("keyId"))){
-
 								         //批示意见
                                         }else if("custemFieldList".equals(_map.get("keyId"))){
-                                           
 										   List custemFieldList = (List)_map.get("custemFieldList");
 										   if(custemFieldList!=null){
 											     String fieldname = "";
@@ -283,19 +282,19 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												 if(content==null||"[]".equals(content)||"null".equals(content)){content = "";}
 
                                                  //单行文本 101
-												 if("101".equals(displayType)&&"1".equals(readwrite)){
+												 if("101".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
                                                      
 													 fieldtype = custemFieldMap.get("fieldtype")+"";
 													 if("1000000".equals(fieldtype)){
 							%>
-                                <tr>
-									<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
-									<td>
-									  <div>
-                                       <input placeholder="请输入" class="edit-ipt-r" type="number" maxlength="9" id='cust_<%=fieldname%>' name='cust_<%=fieldname%>' value='<%=content%>' />
-									  </div>
-									</td>
-								</tr>
+				                                <tr>
+													<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
+													<td>
+													  <div>
+				                                       <input placeholder="请输入" class="edit-ipt-r" type="number" maxlength="9" id='cust_<%=fieldname%>' name='cust_<%=fieldname%>' value='<%=content%>' />
+													  </div>
+													</td>
+												</tr>
 							<%
 													 }else if("1000001".equals(fieldtype)){
 							%>
@@ -321,7 +320,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 							<%
 													 }
                                                  //密码输入 102
-							                     }else if("102".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("102".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 							%>
                                 <tr>
 									<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -333,7 +332,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 								</tr>
 							<% 
 							                     //单选 103
-							                     }else if("103".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("103".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 													 List dataList = (List)custemFieldMap.get("dataList");
                             %>
@@ -364,7 +363,6 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 															 if(contents.length>0){
 																if(hiddenval.equals(contents[0])) selected = " selected='true' ";
 															 }
-
 														 }
 														 out.print("<option value='"+hiddenval+"' "+selected+">"+showval+"</option>");
 													 }
@@ -376,7 +374,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 								</tr>
 							<% 
 												 //多选 104
-							                     }else if("104".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("104".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 													 List dataList = (List)custemFieldMap.get("dataList");
 
@@ -408,10 +406,8 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 														 }
 
 													 }
-													 
 													 out.print("<li class=''><label class='label-checkbox item-content' for='checkIput"+fieldname+hiddenval+"'>");
 													 out.print("<input type='checkbox' name='cust_"+fieldname+"' id='checkIput"+fieldname+hiddenval+"' value='"+hiddenval+",'  "+selected+" />");
-
 													 out.print("<span class='edit-radio-l'>"+showval+"</span>");
 
 													 out.print("</label></li>");
@@ -423,7 +419,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 								</tr>
 							<% 
 												  //下拉框 105
-							                     }else if("105".equals(displayType)){
+							                     }else if("105".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
                                                    
 													List dataList = (List)custemFieldMap.get("dataList");
 
@@ -484,11 +480,10 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 										<td><span><%=name%></span></td>
 										<td><p><%=content%></p></td>
 									</tr>
-
 							<%
 													  }
 							                     //日期 107
-							                     }else if("107".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("107".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 							 %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -497,12 +492,11 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												<input placeholder="选择日期"  class="edit-ipt-r edit-ipt-arrow" type="text" id='cust_<%=fieldname%>' name='cust_<%=fieldname%>' value='<%=content%>' onfocus="selectDateNew(this)" readonly/>
 												<label class="edit-ipt-label" for="scroller"></label>
 											</div>
-
 										</td>
 									</tr>
 							  <% 
 							                     //时间 108
-							                     }else if("108".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("108".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 							 %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -516,7 +510,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 							  <% 
 							                     //日期 时间 109
-							                     }else if("109".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("109".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 							 %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -530,7 +524,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 							 <% 
 							                     //多行文本 110
-							                     }else if("110".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("110".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 							 %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -543,7 +537,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 							  <% 
 							                     //自动编号 111
-							                     }else if("111".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("111".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 							  %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -551,10 +545,9 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 										    <input id='cust_<%=fieldname%>' type="hidden" name='cust_<%=fieldname%>' value='<%=content%>' />
 										</td>
 									</tr>
-
 							  <% 
 							                     //html编辑 113
-							                     }else if("113".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("113".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 							  %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -567,8 +560,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 							  <% 
 							                     //附件上传 115
-							                     }else if("115".equals(displayType)){
-													 
+							                     }else if("115".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 							  %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -609,9 +601,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 							  <% 
 							                     //Word编辑 116
-							                     }else if("116".equals(displayType)){
-													 
-
+							                     }else if("116".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 							  %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -639,7 +629,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 							  <% 
 							                     //Excel编辑 117
-							                     }else if("117".equals(displayType)){
+							                     }else if("117".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 													 
 							  %>
 									<tr>
@@ -658,7 +648,6 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 												<jsp:param name="saveFileNames" value="<%=saveFileNames%>" />
 												<jsp:param name="moduleName" value="<%=moduleName%>" />
 											</jsp:include>
-
 										   <%
 							                 }else if("1".equals(readwrite)){
 							              %>
@@ -668,7 +657,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 							  <% 
 							                     //WPS编辑 118
-							                     }else if("118".equals(displayType)){
+							                     }else if("118".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 													 
 							  %>
 									<tr>
@@ -698,7 +687,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 
 							  <% 
 							                     //当前登录人 202
-							                     }else if("202".equals(displayType)){
+							                     }else if("202".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 													 
 							  %>
 									<tr>
@@ -710,7 +699,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 
 							  <% 
-							                     }else if(("213".equals(displayType)||"215".equals(displayType)||"406".equals(displayType)||"601".equals(displayType)||"602".equals(displayType)||"603".equals(displayType)||"604".equals(displayType)||"605".equals(displayType)||"607".equals(displayType)||"701".equals(displayType)||"201".equals(displayType)||"207".equals(displayType))&&"1".equals(readwrite)){
+							                     }else if(("213".equals(displayType)||"215".equals(displayType)||"406".equals(displayType)||"601".equals(displayType)||"602".equals(displayType)||"603".equals(displayType)||"604".equals(displayType)||"605".equals(displayType)||"607".equals(displayType)||"701".equals(displayType)||"201".equals(displayType)||"207".equals(displayType))&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 							  %>
 									<tr>
@@ -722,7 +711,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 
 							  <% 
-							                     }else if("702".equals(displayType)){
+							                     }else if("702".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
                                                      
 							 %>
 									<tr>
@@ -737,7 +726,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 
 							  <% 
 							                     //单选人 全部 210
-							                     }else if("210".equals(displayType)){
+							                     }else if("210".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 													if("1a".equals(readwrite)){
                                                      
@@ -784,7 +773,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 							<%
 													  }
 							                     //多选人 全部 211
-							                     }else if("211".equals(displayType)){
+							                     }else if("211".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 													if("1a".equals(readwrite)){
 													 String contentId = "";
@@ -817,23 +806,18 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 															 if(contents.length>1){
 																content = contents[0];
 															 }
-
 														 }
 														 if(";".equals(content)){content="";}
 							 %>
-
 							        <tr>
 										<td><span><%=name%></span></td>
 										<td><p><%=content%></p></td>
 									</tr>
-
 							<%
 													  }
 							                     //单选组织 212
-							                     }else if("212".equals(displayType)){
-
+							                     }else if("212".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 													if("1a".equals(readwrite)){
-
 													 String contentId = "";
 													 String contentName = "";
 													 if(content!=null && content.indexOf(";")>-1){
@@ -872,11 +856,10 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 										<td><span><%=name%></span></td>
 										<td><p><%=content%></p></td>
 									</tr>
-
 							<%
 													  }
 							                     //多选组织 214
-							                     }else if("214".equals(displayType)){
+							                     }else if("214".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 												   if("1a".equals(readwrite)){
 
@@ -888,7 +871,6 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 														  contentName = contents[0];
 														  contentId = contents[1];
 														}
-														
 													 }
 													 if(contentName.endsWith(",")){contentName=contentName.substring(0,contentName.length()-1);}
 							 %>
@@ -922,7 +904,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 							<%
 													  }
 							                     //多选组织和人 216
-							                     }else if("216".equals(displayType)){
+							                     }else if("216".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 							 %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -958,7 +940,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
 							 <% 
 							                     //金额 301
-							                     }else if("301".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("301".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 													 fieldtype = custemFieldMap.get("fieldtype")+"";
 													 
@@ -977,7 +959,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 									</tr>
                              <%
 							 			         //批示意见 401
-							                     }else if("401".equals(displayType)){
+							                     }else if("401".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
                              %>
 									<tr>
 										<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -991,7 +973,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 							  <% 
 												 
 												 //合计字段 606
-							                     }else if("606".equals(displayType)){
+							                     }else if("606".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
                                  %>
 										<tr>
 											<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -1002,7 +984,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 								  <%
 											     
 												 //单选人 本组织 704
-							                     }else if("704".equals(displayType)){
+							                     }else if("704".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 												   if("1a".equals(readwrite)){
 
@@ -1049,7 +1031,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 													  }
 
 												 //多选人 本组织 705
-							                     }else if("705".equals(displayType)){
+							                     }else if("705".equals(displayType)&& hiddenFieldString.indexOf(fieldname)==-1){
 
 													if("1a".equals(readwrite)){
 
@@ -1096,7 +1078,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 													  }
 
 												 //流程发起人 708
-							                     }else if("708".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("708".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
                                   %>
 										<tr>
 											<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -1109,7 +1091,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 										</tr>
 								  <%
 											     //日期时间计算 808
-							                     }else if("808".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("808".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
                                   %>
 										<tr>
 											<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -1119,7 +1101,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 										</tr>
 								  <%
 												 //计算字段 203
-							                     }else if("203".equals(displayType)&&"1".equals(readwrite)){
+							                     }else if("203".equals(displayType)&&"1".equals(readwrite)&& hiddenFieldString.indexOf(fieldname)==-1){
                                    %>
 										<tr>
 											<td><span><%if("1".equals(mustfilled)){out.print("<em>*</em>");}%><%=name%></span></td>
@@ -1130,28 +1112,119 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 								  <%
 													 
 							                     }else{
+							                    	 if(hiddenFieldString.indexOf(fieldname)==-1){
 							  %>
-									<tr>
-										<td><span><%=name%></span></td>
-										<td><p><%=content%></p></td>
-									</tr>
+														<tr>
+															<td><span><%=name%></span></td>
+															<td><p><%=content%></p></td>
+														</tr>
 							  <%
-												 }
-												 
+												 	}
+							                     }
 											  }
 										   }
                                           
 										}
 									}
 								%>
-								
+								<!--popup marking -->
+							    
 								<c:if test="${not empty govDocXml}">
 									<x:parse xml="${govDocXml}" var="govDoc"/>
 									<c:set var="goldGridId"><x:out select="$govDoc//goldGridId/text()"/></c:set>
 									<c:set var="wordType"><x:out select="$govDoc//wordType/text()"/></c:set>
 									<x:forEach select="$govDoc//baseData" var="bd" >
-
 										<x:if select="$govDoc//docSaveFile/file">
+										   <% String  oaPdf = (String)request.getSession().getAttribute("oaPdf"); //判断是否需要正文批注，系统设置设置
+										      String  canEdit = (String) request.getAttribute("canEdit");   //是否可编辑，节点设置
+										      ArrayList pdfList = new ArrayList();
+										      String workStatus = request.getParameter("workStatus");
+										    //  String apptype = new WebAppAuth().getAppType(request);
+										    apptype ="evo";
+										   if("1".equals(oaPdf)&&"true".equals(canEdit)&&"evo".equals(apptype)&&("0".equals(workStatus)||"2".equals(workStatus))){  
+													%>
+												<x:forEach select="$govDoc//pdflist/pdfdata" var="pdfdata" >
+													<c:set var="pdfid" ><x:out select="$pdfdata/pdfid/text()" /></c:set>
+													<c:set var="pdfrealname" ><x:out select="$pdfdata/pdfrealname/text()" /></c:set>
+													<c:set var="pdfsavename" ><x:out select="$pdfdata/pdfsavename/text()" /></c:set>
+													<c:set var="pdfwjjmc" ><x:out select="$pdfdata/pdfwjjmc/text()" /></c:set>
+													<c:set var="pdfpzr" ><x:out select="$pdfdata/pdfpzr/text()" /></c:set>
+													<c:set var="pdfpzhj" ><x:out select="$pdfdata/pdfpzhj/text()" /></c:set>
+													<%
+													    pdfList.add(pageContext.getAttribute("pdfid").toString());
+													%>
+													
+												</x:forEach>
+													
+											<tr class="tr-marking">
+		                                        <td colspan="2">
+		                                            <span>查看正文<em>*</em>：</span>
+		                                            <%if(pdfList.size()>1) {%>
+		                                             	<a href="" onclick="" data-popup=".popup-marking" class="open-popup">批阅该文</a>
+		                                             	<div class="popup popup-marking">   <!-- 批阅正文弹出框 -->
+													        <div class="marking-content">
+													            <p>请选择批阅的正文版本</p>
+													            <div>
+													                <ul class="webapp-leaderday-new">
+													                   <x:forEach select="$govDoc//pdflist/pdfdata" var="pdfdata_List" >
+																			<c:set var="pdfid_list" ><x:out select="$pdfdata_List/pdfid/text()" /></c:set>
+																			<c:set var="pdfrealname_list" ><x:out select="$pdfdata_List/pdfrealname/text()" /></c:set>
+																			<c:set var="pdfsavename_list" ><x:out select="$pdfdata_List/pdfsavename/text()" /></c:set>
+																			<c:set var="pdfwjjmc_list" ><x:out select="$pdfdata_List/pdfwjjmc/text()" /></c:set>
+																			<c:set var="pdfpzr_list" ><x:out select="$pdfdata_List/pdfpzr/text()" /></c:set>
+																			<c:set var="pdfpzhj_list" ><x:out select="$pdfdata_List/pdfpzhj/text()" /></c:set>
+															                    <li >
+															                        <em class="blue"></em>
+															                        <p class="time blue"><span>2016-08-16</span><span>09:22</span></p>
+															                        <div class="leader-content leader-content-mark">
+															                            <p class="leader-content-d"><a href="##">${pdfrealname_list}</a></p>
+															                            <p class="leader-content-e">${pdfpzr_list}</p>
+															                            <div class="leader-mark">
+															                              <span class="radius-btn-current" onclick="signPdf('${pdfrealname_list}','${pdfsavename_list}','${pdfwjjmc_list}','${pdfpzr_list}','${pdfpzhj_list}','${pdfid_list}')">批阅该文</span>
+															                            </div>
+															                        </div>
+															                    </li>
+													                    </x:forEach>
+													                    
+													                </ul>
+													            </div>
+													        </div>
+													    </div>
+		                                            <%}else{ %>
+		                                            	<a href="" onclick="signPdf('${pdfrealname}','${pdfsavename}','${pdfwjjmc}','${pdfpzr}','${pdfpzhj}','${pdfid}')"   class="open-popup">批阅该文</a>
+		                                            <%} %>
+		                                            <div>
+		                                            	 <p class="marking-load">
+															<%
+																StringBuilder docSaveFiles = new StringBuilder();
+																StringBuilder docRealFiles = new StringBuilder();
+															%>
+															<x:forEach select="$govDoc//docSaveFile/file" var="file" >
+																<c:set var="saveFile" ><x:out select="$file/text()" /></c:set>
+																<%
+																	docSaveFiles.append(pageContext.getAttribute("saveFile").toString()).append("|");
+																%>
+															</x:forEach>
+															<x:forEach select="$govDoc//docRealFile/file" var="file" >
+																<c:set var="realFile" ><x:out select="$file/text()" /></c:set>
+																<%
+																	docRealFiles.append(pageContext.getAttribute("realFile").toString()).append("|");
+																%>
+															</x:forEach>
+															<c:if test="${saveFile!='' &&  saveFile != null}">
+																<jsp:include page="../common/include_download.jsp" flush="true">
+																	<jsp:param name="realFileNames"	value="<%=docRealFiles.toString() %>" />
+																	<jsp:param name="saveFileNames" value="<%=docSaveFiles.toString() %>" />
+																	<jsp:param name="realtime" value="1" />
+																	<jsp:param name="moduleName" value="govdocumentmanager" />
+																</jsp:include>
+															</c:if>
+														</p>
+		                                            </div>
+		                                        </td>
+		                                    </tr>
+		                                    
+										   <%}else{ %>
 											<tr>
 												<td><span>查看正文</span></td>
 												<td><p>
@@ -1162,26 +1235,27 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 													<x:forEach select="$govDoc//docSaveFile/file" var="file" >
 														<c:set var="saveFile" ><x:out select="$file/text()" /></c:set>
 														<%
-														docSaveFiles.append(pageContext.getAttribute("saveFile").toString()).append("|");
+															docSaveFiles.append(pageContext.getAttribute("saveFile").toString()).append("|");
 														%>
 													</x:forEach>
 													<x:forEach select="$govDoc//docRealFile/file" var="file" >
 														<c:set var="realFile" ><x:out select="$file/text()" /></c:set>
 														<%
-														docRealFiles.append(pageContext.getAttribute("realFile").toString()).append("|");
+															docRealFiles.append(pageContext.getAttribute("realFile").toString()).append("|");
 														%>
 													</x:forEach>
 													<c:if test="${saveFile!='' &&  saveFile != null}">
-													<jsp:include page="../common/include_download.jsp" flush="true">
-														<jsp:param name="realFileNames"	value="<%=docRealFiles.toString() %>" />
-														<jsp:param name="saveFileNames" value="<%=docSaveFiles.toString() %>" />
-														<jsp:param name="realtime" value="1" />
-														<jsp:param name="moduleName" value="govdocumentmanager" />
-													</jsp:include>
+														<jsp:include page="../common/include_download.jsp" flush="true">
+															<jsp:param name="realFileNames"	value="<%=docRealFiles.toString() %>" />
+															<jsp:param name="saveFileNames" value="<%=docSaveFiles.toString() %>" />
+															<jsp:param name="realtime" value="1" />
+															<jsp:param name="moduleName" value="govdocumentmanager" />
+														</jsp:include>
 													</c:if>
 													</p>
 												</td>
 											</tr>
+											<%  } %>
 										</x:if>
 										<x:if select="$govDoc//realFile">
 											<tr>
@@ -1678,7 +1752,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
   	 var myApp = new Framework7({
 	       fastClicks: false,
 	 });
-  	var $$ = Dom7;
+   	 var $$ = Dom7;
 	  //右下角菜单弹框
 	  $$('#fbtn-more').click(function () {
 	    // body...
@@ -1756,7 +1830,6 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
     var backFlag = 1;//防止退回重复提交
     var workfolwSendFlag = 1;//防止退回重复提交
     function subForm(){
-
         confirmForm();
     	var tipValue = judgeAppCanDo(); 
     	if(tipValue!=""){
@@ -1780,6 +1853,10 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
     		return;
     	}
     	flag = 0;
+    	var oaPdf = $("#oaPdf").val();
+    	if(oaPdf == '1'){  //有批注
+    		$imag.eval('savePdf("' + pdfFilePath + '")');  //d调用EVO方法保存pdf批注。
+        }
     	$('#sendForm').submit();
     }
 	
@@ -2300,6 +2377,74 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 			obj2.val( obj1.val() + ";" + obj2.val());
 		}
 	}
+	var pdfStatue='0';
+	var g_pdfpzr = '';
+	var g_pdfpzhj = '';
+	var g_pdfid = '';
+	function signPdf(realName,saveName,path,pdfpzr,pdfpzhj,pdfid){
+		 if(pdfStatue=='1'){
+         	return;
+         }
+         pdfStatue='1';
+         myApp.showPreloader('页面加载中...');
+         $("#pdfid").val(pdfid);
+         var postUrl = '/defaultroot/doc/dealPdf.controller';
+         $.ajax({
+ 			url : postUrl,
+ 			type : "post",
+ 			data : {'realName':realName,'saveName':saveName,'path':path},
+ 			success : function(data){
+ 	 			var obj = JSON.parse(data);
+	            var result = obj.result;
+				myApp.hidePreloader();
+	            if(result=="1"){ 
+                 	var saveName = obj.saveName;
+			//		saveName = "http://demo1.whir.net:50645/defaultroot/upload/pdffile/201707.pdf";
+                 	$imag.eval('dopdf("' + saveName + '","<%=(String)request.getSession().getAttribute("userName")%>")');   //调用客户端方法进行批注
+	            }
+	            g_pdfpzr=pdfpzr;
+	            g_pdfpzhj = pdfpzhj;
+	            g_pdfid = pdfid;
+ 				
+ 			}
+ 			
+ 		 });
+         pdfStatue='0';
+	}
+
+	function getTime(){
+		var myDate = new Date();
+		myDate.getFullYear();
+		var month = myDate.getMonth()+1;
+		myDate.getDate(); 
+		myDate.getHours();
+		myDate.getMinutes();
+		var nowDate = myDate.getFullYear()+'-'+month+'-'+myDate.getDate()+' '+myDate.getHours()+':'+myDate.getMinutes();
+		return nowDate;
+	}
+
+	var pdfFilePath = "";
+	function pdfCallback(result){   //客户端编辑完成后返回方法
+		setTimeout (function () {
+			pdfFilePath = result;
+			var userName = "<%=(String)request.getSession().getAttribute("userName")%>";
+			var time = getTime();
+			var workName = "${workcurstep}";
+			$("#pdfzhpzsj").val(time);
+			$("#oaPdf").val('1');
+			var huajie = userName+"("+time+""+workName+")";
+			if(g_pdfpzr !=''){
+				$("#pdfpzr").val(g_pdfpzr+","+userName);
+				$("#pdfpzhj").val(g_pdfpzhj+","+huajie);
+			}else{
+				$("#pdfpzr").val(userName);
+				$("#pdfpzhj").val(huajie);
+			}
+			alert("签批成功！");
+		}, 100);
+	}
+
+
 	//解决input输入框的问题
     
   </script>

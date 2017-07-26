@@ -203,6 +203,8 @@
   		$$('.webapp-infomation-article table').css("width","100%");
   		$$('.webapp-infomation-article p').css("margin","");
   		$$('.webapp-infomation-article p').css("overflow","hidden");
+  		$$('.webapp-infomation-article p').css("line-height","");
+  		$$('.webapp-infomation-article p').css("text-indent","0rem"); 
   		if(inTitle == '' && inchannelName == ''){
   			$$('.grey-bg').html('');
   			myApp.alert('该信息已删除！', function () {

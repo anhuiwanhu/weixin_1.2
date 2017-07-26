@@ -134,7 +134,7 @@
 					<%
 						newContent = (String)pageContext.getAttribute("content");
 						//System.out.print("newContent11111--------->"+newContent);
-						newContent = newContent.replaceAll("<SCRIPT[^>]*>[\\d\\D]*?</SCRIPT>","").replaceAll("<script[^>]*>[\\d\\D]*?</script>","").replaceAll("\"","'");
+						newContent = newContent.replaceAll("\"","'");
 						//System.out.print("newContent22222--------->"+newContent);
 						String mailsubject = (String)pageContext.getAttribute("mailsubject");
 						mailsubject = mailsubject.replace("\n","");
@@ -150,7 +150,7 @@
 					</td>
 		         </tr>
               </table>
-			  <input type="hidden" name="mailreplySub" id="mailreplySub">
+			<input type="hidden" name="mailreplySub" id="mailreplySub">
 			<input type="hidden" name="mailreplyContent" id="mailreplyContent">
 			<input type="hidden" name="mailId" id="mailId" value="${mailId}">
 			<input type="hidden" name="mailuserId" id="mailuserId" value="${mailuserId}">
@@ -292,6 +292,9 @@
 		replyContent += "主题:  " + "${mailsubject}" + "\r\n";
 		replyContent += "内容: " + newContent + "\r\n";
 		replyContent += "----------  End  ----------" + "\r\n";
+
+		//alert(replyContent);
+		
 		$("#mailreplySub").val(replySub);
 		$("#mailreplyContent").val(replyContent);
 		$('#openType').val('forward');

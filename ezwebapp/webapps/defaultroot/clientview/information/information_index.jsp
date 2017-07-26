@@ -824,7 +824,7 @@
 			      			openImg(jsonData[11],'push');
 			      			var title = jsonData[9];
 			      			if(jsonData[9].length>8){
-				      			title = title.substring(0,7)+'...';
+				      			title = title.substring(0,18)+'...';
 				      		}
 			      			head = '<img id="push_'+jsonData[11].substring(0,25)+'"  /><span class="img-foot">'+title+'</span>';
 			      		}else{
@@ -839,6 +839,7 @@
 			      		if(jsonData[10] && jsonData[10].length>70){
 			      			infoContent = infoContent.substring(0, 70)+'...';
 			      		}
+			      		var orgNameArr = jsonData[5].split(".");
 			      		var readFlagHtml = '';
 			      		if(jsonData[13] == '0'){
 			      			readFlagHtml = '<i></i>';
@@ -854,9 +855,9 @@
 						+head
 						//+'<img src="/clientview/images/info-title.jpg" />'
 						+'<div class="push-tips clearfix">'
-						+'<span>'+jsonData[5]+'·'+jsonData[3]+'</span>'
+						+'<span>'+orgNameArr[orgNameArr.length-1]+'·'+jsonData[3]+'</span>'
 						+'<div>'
-						+'<span>'+jsonData[7]+'</span>'
+						+'<span>'+jsonData[7].substring(0,16)+'</span>'
 						+'<em>'+jsonData[6]+'</em>'
 						+'</div>'
 						+'</div>'

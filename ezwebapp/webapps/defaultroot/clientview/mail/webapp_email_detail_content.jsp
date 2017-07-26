@@ -22,13 +22,14 @@ p{line-height:none}
 	<c:set var="wfWorkId">${wfWorkId}</c:set>
 	<%
 	    String content = (String)pageContext.getAttribute("mailcontent");
-	    content = com.whir.util.StringUtils.resizeImgSize(content, "240", "50%");
+	    //content = com.whir.util.StringUtils.resizeImgSize(content, "240", "50%");//增加图片长宽，并赋予点击展开效果(暂时取消此方法)
 	    String infoId = (String)pageContext.getAttribute("infoId");
 	    String infoType = (String)pageContext.getAttribute("infoType");
 	    String channelId = (String)pageContext.getAttribute("channelId");
 		String boardroomApplyId = (String)pageContext.getAttribute("boardroomApplyId");
 		String wfWorkId = (String)pageContext.getAttribute("wfWorkId");
 		String rep ="";
+		
 		if(infoId != null && !"".equals(infoId)){
 			rep = "<a target='_top' href='/defaultroot/information/infoDetail.controller?infoId="+infoId+"&informationType="+infoType+"&channelId="+channelId+"&informationCommonNum=0'>";
 			content = content.replaceAll("<a href[^>]*>",rep);
@@ -46,13 +47,9 @@ p{line-height:none}
 			content = content.replaceAll("<a href[^>]*>",rep);
 		}
     	String gnome = HtmlUtils.htmlUnescape((String)pageContext.getAttribute("gnome"));
-    	String isYzOffice = com.whir.util.PropertyUtil.getPropertyByKey("isYzOffice");
-		String downloadType = com.whir.util.PropertyUtil.getPropertyByKey("downloadType"); 
-		if(downloadType==null || "null".equals("downloadType") || "".equals(downloadType)){
-			downloadType = "1";
-		}
 	%>
-	<%=content%><%=gnome %>
+	<c:out value="<%=content%>"  escapeXml="false" />
+	<%=gnome %>
 </body>
 </html>
 <script type="text/javascript" src="/defaultroot/clientview/js/subClick.js"></script>
@@ -65,7 +62,7 @@ p{line-height:none}
 	});
 
 	function loadImg(){
-		$("input[name='pictureName']").each(
+		$("input[name='pictureName']").each( 
 			function (){
 				var filename = $(this).val();
 				//alert(filename);
@@ -83,6 +80,8 @@ p{line-height:none}
 						success : function(data){
 							$('#'+id).attr("src","<%=rootPath%>"+data);
 							$('#'+id).attr("width","100%");
+							$('#'+id).attr("height","100%");
+							$('#'+id).attr("onclick","window.open('<%=rootPath%>"+data+"')");//给图片增加一个点击展示图片效果
 						},
 						error : function (xhr,type){
 							//alert('数据查询异常！');
@@ -96,12 +95,11 @@ p{line-height:none}
 	//打开附件
 	function downFile(menuHtmlLink,menuFileLink,aId) {
 	  	var path = 'information';
-	  	var isYzOffice = "${isYzOffice}";
-  		var downloadType = "${downloadType}"
 	  	if(aId == undefined){
 	  		aId = menuHtmlLink.split('.')[0];
 	  		path = 'html';
 	  	}
+	  		
 	  	$.ajax({
 			type: 'post',
 			url: "<%=rootPath%>/download/getOpenFileUrl_New.controller",
@@ -109,11 +107,7 @@ p{line-height:none}
 			data : {"fileName": menuHtmlLink,"name": menuFileLink,"path":path},
 			success: function(data){
 				var jsonData = eval("("+data+")");
-				if(jsonData.apptype == "evo" && downloadType=="1"){
-			 		$imag.exec("clickSubyz(\""+menuHtmlLink+"\",\""+path+"\",\""+jsonData.tmpurl+"\",\""+menuFileLink+"\")");
-			 	}else{
-			 		clickSubyz(jsonData.url,$('#'+aId),menuHtmlLink,"information",jsonData.smartInUse,jsonData.isEncrypt,jsonData.tmpurl,jsonData.apptype,'',isYzOffice);
-			 	}
+				clickSub(jsonData.url,$('#'+aId),menuHtmlLink,"information",jsonData.smartInUse,jsonData.isEncrypt,jsonData.tmpurl,jsonData.apptype);
 			},error: function(xhr, type){
 				alert('数据查询异常！');
 			}

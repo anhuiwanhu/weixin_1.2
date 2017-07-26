@@ -956,16 +956,36 @@ String fromPage = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
     }, 2000); 
     });
 
-	 var dialog = null;
+	var dialog = null;
     var flag = 1;//防止重复提交
     var backFlag = 1//防止退回重复提交
-    function subForm(val){
+	var evoFlag = 1//防止evo重复提交
+    function subForm(){
     	if(flag == 0){
     		return;
     	}
     	flag = 0;
-		$("#subFlag").val(val);
     	$('#sendForm').submit();
+    }
+
+	//evo原表单保存
+	function subFormEvo(val){
+		$("#subFlag").val(val);
+    	if(evoFlag == 0){
+    		return;
+    	}
+    	evoFlag = 0;
+		var suburl = '/defaultroot/workflow/sendnew.controller';
+		$.ajax({
+			url : suburl,
+			type : "post",
+			data : $('#sendForm').serialize(),
+			success : function(data){
+				if(data != '1'){
+					myApp.alert("表单保存失败！");
+				}
+			}
+		});		
     }
     function subBackForm(){
     	if(backFlag == 0){

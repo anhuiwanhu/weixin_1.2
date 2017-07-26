@@ -62,3 +62,35 @@ alter table org_employee add empDuty varchar(50);
 alter table org_employee modify empDuty varchar(50) CHARACTER SET utf8;
 insert  into `ezmobile_patchinfo`(`patch_Version`,`patch_Name`,`patch_Time`,`patch_editinfo`,`PATCH_EVO`,`isclientuse`) 
 values ('1.2.2','1.2.2_webapp_20170710',sysdate(),'WanhuezOFFICE','0','0');
+
+
+
+
+
+
+
+
+
+
+
+
+update oa_custmenu_curmobile set clientIsUse=0 where mobileMenuCode ='meetingassistant';
+update oa_custmenu_curmobile set mobileMenuIsUse=0 where mobileMenuCode ='meetingassistant';
+update oa_custmenu_curmobile set imgName='desk_mobilelocation.png' where mobileMenuCode ='mobilelocation';
+update oa_custmenu_curmobile set imgName='desk_questionnaire.png' where mobileMenuCode ='questionnaire';
+update oa_custmenu_curmobile set imgName='desk_meetingnotice.png' where mobileMenuCode ='meetingnotice';
+update oa_custmenu_curmobile set imgName='desk_schedule.png' where mobileMenuCode ='eventmanages';
+update oa_custmenu_curmobile set mobileMenuIsUse=0 where mobileMenuCode ='meetingassistant';
+update oa_custmenu_curmobile set mobileMenuIsUse=0 where mobileMenuCode ='workmanager_workreport';
+update oa_custmenu_curmobile set mobileMenuIsUse=0 where mobileMenuCode ='workmanager_calendar';
+DELETE FROM org_organization;
+DELETE FROM org_employee where  emp_id<>1;
+DELETE FROM org_organization_user;
+DELETE FROM org_group;
+update sys_corp_set set timestamp = '0';
+alter table org_organization add orgordercode decimal(10);
+alter table org_employee add empMobilePhone varchar(20);
+alter table org_employee add empDuty varchar(50);
+alter table org_employee modify empDuty varchar(50) CHARACTER SET utf8;
+insert  into `ezmobile_patchinfo`(`patch_Version`,`patch_Name`,`patch_Time`,`patch_editinfo`,`PATCH_EVO`,`isclientuse`) 
+values ('1.2.3','1.2.3_webapp_20170724',sysdate(),'WanhuezOFFICE','0','0');

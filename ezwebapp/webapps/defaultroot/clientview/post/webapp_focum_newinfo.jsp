@@ -8,11 +8,14 @@
 </c:if>
 <head lang="en">
 <%
+	String userId = session.getAttribute("userId").toString();
+	userId = "*" + userId + "*";
 	String curClassId = EncryptUtil.sqlcode(EncryptUtil.htmlcode(request.getParameter("curClassId")));
 	if(curClassId == null){
 		curClassId = "";
 	}
 %>
+<c:set var="userId"><%= userId%></c:set>
 <c:set var="curClassId"><%= curClassId%></c:set>
 
   <meta charset="UTF-8">
@@ -252,12 +255,18 @@
 	var offset = "";
 	var recordCount = '${recordCount}';
 	var loading = false;
+	var classOwnerIds = '${classOwnerIds}';//版主id
+	var userId = '${userId}';//当前登录人id
 	$(function(){
 		
 		//回复引用后返回该页面做出是否需要审核判断
 		var checkexamin = '${param.checkexamin}';
 		if(checkexamin == '1'){
-			myApp.alert("回复或引用后的帖子需要版主审核！");
+			if(classOwnerIds == userId){
+				return;
+			}else{
+				myApp.alert("回复或引用后的帖子需要版主审核！");
+			}
 		}
 		
 		

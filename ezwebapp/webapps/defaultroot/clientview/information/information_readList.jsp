@@ -194,21 +194,21 @@
 			}else{
 				myApp.hidePreloader();
 				if(type == 0){
-					$$('#list1').html('<li style="padding: 1rem; font-size: 17px;"  class="swipeout">系统未查询到相关记录 !</li>');
+					$$('#list1').html('<li style="font-size: 17px;"  class="swipeout">系统未查询到相关记录 !</li>');
 				}else if(type ==1){
-					$$('#list2').html('<li style="padding: 1rem; font-size: 17px;"  class="swipeout">系统未查询到相关记录 !</li>');
+					$$('#list2').html('<li style="font-size: 17px;"  class="swipeout">系统未查询到相关记录 !</li>');
 				}else{
-					$$('#list3').html('<li style="padding: 1rem; font-size: 17px;"  class="swipeout">系统未查询到相关记录 !</li>');
+					$$('#list3').html('<li style="font-size: 17px;"  class="swipeout">系统未查询到相关记录 !</li>');
 				}
 			}
 		  },error: function(xhr, status) {
 		  	myApp.hidePreloader();
 		  	if(type == 0){
-				$$('#list1').html('<li style="padding: 1rem; font-size: 17px;"  class="swipeout">系统未查询到相关记录 !</li>');
+				$$('#list1').html('<li style="font-size: 17px;"  class="swipeout">系统未查询到相关记录 !</li>');
 			}else if(type ==1){
-				$$('#list2').html('<li style="padding: 1rem; font-size: 17px;" class="swipeout">系统未查询到相关记录 !</li>');
+				$$('#list2').html('<li style="font-size: 17px;" class="swipeout">系统未查询到相关记录 !</li>');
 			}else{
-				$$('#list3').html('<li style="padding: 1rem; font-size: 17px;" class="swipeout">系统未查询到相关记录 !</li>');
+				$$('#list3').html('<li style="font-size: 17px;" class="swipeout">系统未查询到相关记录 !</li>');
 			}
 		  }
 	  });

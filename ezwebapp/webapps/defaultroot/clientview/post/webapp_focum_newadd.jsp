@@ -9,9 +9,17 @@
   <title>发帖</title>
   <link rel="stylesheet" href="/defaultroot/clientview/template/css/template.style.ios.min.css" />
   <link rel="stylesheet" href="/defaultroot/clientview/template/css/template.webapp-style.min.css" /> 
-  <style type="text/css">.focum-a .focum-replies .replies-top{background:#fff;}  footer.wh-footer{position:fixed !important;}</style>
+  <style type="text/css">
+  	.focum-a .focum-replies .replies-top{background:#fff;}  
+  	footer.wh-footer{position:fixed !important;}
+  </style>
 </head>
-
+<%
+	String userId = session.getAttribute("userId").toString();
+	userId = "*" + userId + "*";
+ %>
+ <c:set var="userId"><%= userId%></c:set>
+ 
 <body class="grey-bg">
   <div class="views">
     <div class="view">
@@ -80,8 +88,7 @@
 									  <span class="edit-radio-l">匿名</span>
 								</label>
 							</li>
-
-							 <li data-val="2" <c:if test="${hasNick eq '0'}">style="display:none;"</c:if>>
+							<li data-val="2" <c:if test="${hasNick eq '0'}">style="display:none;"</c:if>>
 								<label class="label-checkbox item-content">								 
 									  <span class="edit-radio-l">昵称</span>
 								</label>
@@ -149,6 +156,8 @@
 	fastClicks: false,
   });
   var $$ = Dom7;
+
+	var userId = '${userId}';
 
   	//  点击显示表情
   	$$(".section-focum-replies .smile .tab").css({"height":"0"});//开始默认表情框高度为0
@@ -388,7 +397,7 @@
 	
 	//确定选择的版块
 	function confirmSelect(){
-		$("#footerButton").attr("style","position: fixed;display:none");
+		//$("#footerButton").attr("style","position: fixed;display:none");
 		var channelRadio = $$("input[type='radio']:checked").val();
 		if(channelRadio == undefined ){
 			myApp.alert('论坛版块不能为空，请选择');
@@ -397,7 +406,15 @@
 		var arr = channelRadio.split(',');
 		$$("#classId").val(arr[0]);//板块id
 		$$("#className").val(arr[1]);//板块名称
-		$$("#classShowName").html(arr[1]);//板块名称
+		if(arr[1].length > 6){
+			//alert(arr[1].length);
+			$$("#classShowName").html(arr[1].substring(0,6) + "...");//板块名称
+		}else{
+			//alert(arr[1].length);
+			$$("#classShowName").html(arr[1]);//板块名称
+		}
+		
+		
 		var estopAnonymity = arr[2];//板块是否允许匿名   
 		if(estopAnonymity == '1'){//不允许
 			$("#niming").css("display","none");
@@ -497,8 +514,19 @@
 				success : function(data){
 					var jsonData = eval("("+data+")");
 					if(jsonData.result == 'success'){
-						myApp.alert("发送成功！");
-						window.history.back();
+						var classOwnerIds = jsonData.data1;
+						var checkExamin = jsonData.data2;
+						if(checkExamin == '1'){
+							if(classOwnerIds == userId){
+								myApp.alert('发帖成功！', function () {
+				      				window.history.back();
+				      			});	
+							}else{
+								myApp.alert('发帖成功，但您发的帖子需要版主进行审核！', function () {
+				      				window.history.back();
+				      			});	
+							}
+						}
 						//location.href="/defaultroot/post/index.controller";
 					}else if(jsonData.result == 'fail'){
 						myApp.alert("发送失败！");

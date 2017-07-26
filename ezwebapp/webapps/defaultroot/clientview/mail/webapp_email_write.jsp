@@ -16,10 +16,6 @@
 	if(mailreplySub == null){
 		mailreplySub = "";
 	}
-	String mailreplyContent = EncryptUtil.sqlcode(EncryptUtil.htmlcode(request.getParameter("mailreplyContent")));
-	if(mailreplyContent == null){
-		mailreplyContent = "";
-	}
 	String accessorySize = EncryptUtil.sqlcode(EncryptUtil.htmlcode(request.getParameter("accessorySize")));
 	if(accessorySize == null){
 		accessorySize = "";
@@ -32,7 +28,6 @@
 <c:set var="openType"><%=openType %></c:set>
 <c:set var="openFlag"><%=openFlag %></c:set>
 <c:set var="mailreplySub"><%=mailreplySub %></c:set>
-<c:set var="mailreplyContent"><%=mailreplyContent %></c:set>
 <c:set var="accessorySize"><%=accessorySize %></c:set>
 <c:set var="fromPage"><%=fromPage %></c:set>
 <head lang="en">
@@ -108,10 +103,10 @@
 	                <tr>
 	                    <th>抄送：</th>
 	                    <td><span class="fr" style="float:left" onclick="$(this).next('input').click()" id="chaosong"></span>
-	                        <input onclick="selectUser('1','mailcc','mailccid','*0*');" class="edit-ipt-r edit-ipt-arrow" type="text" readonly value="${mailCc}" id="mailcc" name="mailcc" placeholder="请选择"/>
+		                   <input onclick="selectUser('1','mailcc','mailccid','*0*');" class="edit-ipt-r edit-ipt-arrow" type="text" readonly value="${mailCc}" id="mailcc" name="mailcc" placeholder="请选择"/>
 	                        <input type="hidden" value="${mailccId}" name="mailccid" id="mailccid"/>
 	                    </td>
-	                </tr>
+				    </tr>
                   <tr>
                     <th><em class="red-em">*</em>主题<i class="fa fa-asterisk"></i>：</th>
                     <td>
@@ -175,15 +170,17 @@
 	                </tr>
 	                <tr>
 	                    <td colspan="2">
+	                    	<input type="hidden" name="mailOldContent" id="mailOldContent" value="${mailOldContent }">
 	                        <div class="edit-txta-box">
 	                        <c:set var="content">${empty mailreplyContent ? content : mailreplyContent}</c:set> 
 	                        <%
 		                		String newContent = (String)pageContext.getAttribute("content");
-							    newContent = com.whir.util.StringUtils.resizeImgSize(newContent, "240", "");
-		                		newContent.replaceAll("<a href[^>]*>","").replaceAll("</a>","");
+	                        	System.out.print("--newContent111--------->"+newContent);
+							    //newContent = com.whir.util.StringUtils.resizeImgSize(newContent, "100", "100");
+		                		//newContent.replaceAll("<a href[^>]*>","").replaceAll("</a>","");
 		                		newContent = newContent.replaceAll("<br>","\n");
 		   
-		                		
+		                		System.out.print("--newContent222--------->"+newContent);
 							%>
 							<c:set var="newContent"><%=newContent %></c:set> 
 							<c:choose>
@@ -191,7 +188,7 @@
 					  			<textarea onmousedown="cursorReset(event,this)" id="mailcontent" name="mailcontent" class="edit-txta edit-txta-l" placeholder="请输入文字" style="min-height:20rem">
 								                         ${newContent}
 								</textarea>	
-					  		</c:when>					  		
+					  		</c:when>
 							<c:when test="${openType eq 'forward'}">
 					  		    <textarea onmousedown="cursorReset(event,this)" id="mailcontent" name="mailcontent" class="edit-txta edit-txta-l" placeholder="请输入文字" style="min-height:20rem">
 								                          ${newContent}
@@ -529,30 +526,31 @@
 	     			//window.location = 'mailBox.controller';
 	     			//alert("openFlag----------->"+openFlag);
 					//alert("fromPage----------->"+fromPage);
-					var openUrl ="/defaultroot/mail/mailBox.controller";
-	     			if(openFlag == 'yes'){
-						if(openType == 'write'){
-							if(fromPage == 'evo'){
-								$imag.exec('closeEvoPage()');
+					setTimeout(function(){
+						if(openFlag == 'yes'){
+							if(openType == 'write'){
+								if(fromPage == 'evo'){
+									$imag.exec('closeEvoPage()');
+								}else{
+									window.history.back();
+								}
 							}else{
-								window.history.back();
+								if(fromPage == 'evo'){
+									$imag.exec('closeEvoPage()');
+								}else{
+									window.history.go(-2);
+								}
 							}
-						}else{
-							if(fromPage == 'evo'){
-								$imag.exec('closeEvoPage()');
-							}else{
-								window.history.go(-2);
-							}
-						}
-		     		}else{
-		     			WeixinJSBridge.call('closeWindow');
-		     			//window.location = 'mailBox.controller';
-		     			//alert("从通讯录进来的。。。。");
-		     			//alert("cdv------------>"+cdv);
-		     			//alert("cdv.window------------>"+cdv.window);
-		     			//alert("cdv.window.close------------>"+cdv.window.close);
-		     			//cdv.window.close();
-			     	}
+			     		}else{
+			     			WeixinJSBridge.call('closeWindow');
+			     			//window.location = 'mailBox.controller';
+			     			//alert("从通讯录进来的。。。。");
+			     			//alert("cdv------------>"+cdv);
+			     			//alert("cdv.window------------>"+cdv.window);
+			     			//alert("cdv.window.close------------>"+cdv.window.close);
+			     			//cdv.window.close();
+				     	}
+    				},1000);
 	    		}
 	    	},
 	    	error : function(){
@@ -594,18 +592,7 @@
     	//alert("empName----->"+empName);
     	var empId = $('#empId').val();
     	//alert("empId----->"+empId);
-    	var mailsubject = $('#mailsubject').val();
-
-		mailsubject = mailsubject.replace(/</g,"＜");
-		mailsubject = mailsubject.replace(/>/g,"＞");
-		$('#mailsubject').val(mailsubject);
-		//alert("mailsubject------->"+mailsubject);
-    	var mailcontent = $('#mailcontent').val();
 		
-		mailcontent = mailcontent.replace(/</g,"＜");
-		mailcontent = mailcontent.replace(/>/g,"＞");
-		$('#mailcontent').val(mailcontent);
-
     	if(!empName || !empId){
     		myApp.alert('请选择收件人！');
     		return false;
@@ -614,7 +601,7 @@
     		myApp.alert('请输入主题！');
     		return false;
     	}
-		if(mailsubject.replace(/\s/g,"") == ""){
+		if(mailsubject == ""){
 			myApp.alert('主题不能为空！');
 			return false;
 		}
