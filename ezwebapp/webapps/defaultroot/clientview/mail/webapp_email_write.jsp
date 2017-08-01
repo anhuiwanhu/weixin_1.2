@@ -175,12 +175,12 @@
 	                        <c:set var="content">${empty mailreplyContent ? content : mailreplyContent}</c:set> 
 	                        <%
 		                		String newContent = (String)pageContext.getAttribute("content");
-	                        	System.out.print("--newContent111--------->"+newContent);
+	                        	//System.out.print("--newContent111--------->"+newContent);
 							    //newContent = com.whir.util.StringUtils.resizeImgSize(newContent, "100", "100");
 		                		//newContent.replaceAll("<a href[^>]*>","").replaceAll("</a>","");
 		                		newContent = newContent.replaceAll("<br>","\n");
 		   
-		                		System.out.print("--newContent222--------->"+newContent);
+		                		//System.out.print("--newContent222--------->"+newContent);
 							%>
 							<c:set var="newContent"><%=newContent %></c:set> 
 							<c:choose>

@@ -271,7 +271,7 @@
                           <form method="get" data-search-list=".list-container" data-search-in=".item-title" class="searchbar searchbar-init nomal-searchbar">
                             <label class="fa fa-search" for="search"></label>
                             <input id="searchAll" type="search" class="nomal-search" placeholder="请输入流程标题查询" onfocus ="show('6');"/>
-							<i class="fa fa-times-circle-o receiveWeek" id="cancel6"  style="display:none;"  onclick="removeSearch(this);listFlowData('/defaultroot/dealfile/getListData.controller','0');hide('6');"></i>
+							<i class="fa fa-times-circle-o receiveWeek" id="cancel6"  style="display:none;"  onclick="removeSearch(this);listFlowData('/defaultroot/workflow/listFlowData.controller','0');hide('6');"></i>
                           </form>
                         </div>
                       </div>

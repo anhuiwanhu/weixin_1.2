@@ -31,10 +31,10 @@
                 <div class="wh-clock-info">
                   <c:choose>
                   	<c:when test="${recordCount != 0 }">
-                  		<p><span id="toDay"></span>&nbsp;&nbsp;您本日已签到<span>${recordCount }</span>次</p>
+                  		<p><span id="toDay"></span>&nbsp;${orgName }&nbsp;${userName }&nbsp;&nbsp;您本日已签到<span>${recordCount }</span>次</p>
                   	</c:when>
                   	<c:otherwise>
-                  		<p><span id="toDay"></span>&nbsp;&nbsp;您本日尚未签到！</p>
+                  		<p><span id="toDay"></span>&nbsp;${orgName }&nbsp;${userName }&nbsp;&nbsp;您本日尚未签到！</p>
                   	</c:otherwise>
                   </c:choose>
                   
@@ -308,6 +308,7 @@ function getSelDate() {
 		    getMyLocationByDD();
 		});
 	}else if("evo"==apptype){
+	    $('#attendancesource').val("4");
 		setTimeout('getMyLocationByEvo()',500);
 	}else{
 		getMyLocationByH();
@@ -440,8 +441,8 @@ function getSelDate() {
 						$$(".btn").removeClass("sing-load");
 					    setTimeout(function(){
 					        myApp.hidePreloader();
-					        window.history.back();
-					        window.location.reload(); 
+					       // window.history.back();
+					        location.reload();
 						    //$$(".footer-signin>a").removeClass("fbtn-matter").addClass("fbtn-cancle");
 							//$$(".footer-signin>a").next().removeClass("fbtn-cancle").addClass("fbtn-matter");
 							//$$(".section-signin").hide().eq(1).show();
@@ -553,12 +554,12 @@ function getSelDate() {
 	//获取位置信息(通过h5)
 	 function getMyLocationByH(){
 		//判断是否支持 获取本地位置
-		 if (navigator.geolocation){
+		 /*   if (navigator.geolocation){
 		    	navigator.geolocation.getCurrentPosition(showPosition);
 		  }else{
 			  x.innerHTML="浏览器不支持定位.";
-		  }
-		 /*  var latlng = "";
+		  }*/
+		var latlng = "";
 		  var latitude = 31.824254;
 		  var longitude = 117.296121;
 		    
@@ -569,7 +570,7 @@ function getSelDate() {
 				    });
 	    setTimeout(function() {
 			 myLocation(31.82372,117.3023,"测试位置");
-	    }, 1500);*/
+	    }, 1500);
 	     
 	 }
 	 
@@ -989,6 +990,63 @@ function getSelDate() {
 		    }
 		});
 	}
+	
+	var tdflag = false;
+	$$("#monitor td").click(function(){
+	    if(tdflag){
+	    	return false;
+	    }
+	    tdflag = true;
+    	var tdTime = $(this).find('em').attr('id');
+        var tdStatus = $("#"+tdTime.replace("-","").replace("-","")).html();
+        var url = '/defaultroot/attendance/getMonthKqList.controller';
+        if(tdStatus != '未签'){
+           $$.ajax({
+		      type: "post",
+		      url: url,
+		      dataType: "text",
+		      data : {"year" : tdTime.split("-")[0], "month" : tdTime.split("-")[1]},
+		      success: function(data) {
+		      	var jsonData = eval("("+data+")");
+		      	var dataList = jsonData.data.list;
+		      	if(Array.isArray(dataList)){
+			      	if(dataList.length>0){
+			      	    var loadI = 0;
+				      	for(var i = 0; i < dataList.length; i++){
+				      	   if(tdTime == dataList[i].presentTime){
+				      	        tdflag = false
+				      	        loadI = 1;
+				      	   		window.location = "/defaultroot/attendance/myKqDetail.controller?id="+dataList[i].id+"&presentTime="+tdTime;
+				      	   }
+				      	}
+				      	if(loadI == 0){
+				      	    tdflag = false;
+				      		myApp.alert("当天无签到信息！");
+				      	}
+			      	}else{
+			      	    tdflag = false;
+			      		myApp.alert("当天无签到信息！");
+			      	}
+		      	}else if(dataList != undefined){
+		      	    if(tdTime == dataList.attendanceList.presentTime){
+		      	    	tdflag = false
+		      	   		window.location = "/defaultroot/attendance/myKqDetail.controller?id="+dataList.attendanceList.id+"&presentTime="+tdTime;
+		      	    }else{
+		      	        tdflag = false;
+		      	    	myApp.alert("当天无签到信息！");
+		      	    }
+		      	}else{
+		      		tdflag = false;
+		      		myApp.alert("当天无签到信息！");
+				}
+		      },error: function(xhr, status) {
+		      	tdflag = false;
+		      }
+	      });
+        }else{
+        	tdflag = false;
+        }
+	 })
 	
 	function getKqStatusByMonth(data) {
         var nowYear = data.split("-")[0];

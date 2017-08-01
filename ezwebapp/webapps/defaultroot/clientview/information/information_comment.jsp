@@ -96,10 +96,8 @@
 				$$('#comList').html(comHtml);	
 			}else{
 				myApp.hidePreloader();
-				$$('#comList').html('<div  style="padding: 1rem; font-size: 17px;"  class="follow-list">系统未查询到相关记录 !</div>');
 			}
 		  },error: function(xhr, status) {
-		  	$$('#infoList').html('<div  style="padding: 1rem; font-size: 17px;"  class="follow-list">系统未查询到相关记录 !</div>');
 		  }
 	  });
 	}

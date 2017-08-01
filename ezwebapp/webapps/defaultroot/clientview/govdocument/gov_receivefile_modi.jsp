@@ -24,7 +24,7 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=0,minimal-ui">
   <title>文件办理</title>
  </head>
-<body class="grey-bg">
+<body class="grey-bg" style="cursor: pointer">
   <div class="views">
     <div class="view">
       <div class="pages">
@@ -1140,7 +1140,6 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 										      ArrayList pdfList = new ArrayList();
 										      String workStatus = request.getParameter("workStatus");
 										    //  String apptype = new WebAppAuth().getAppType(request);
-										    apptype ="evo";
 										   if("1".equals(oaPdf)&&"true".equals(canEdit)&&"evo".equals(apptype)&&("0".equals(workStatus)||"2".equals(workStatus))){  
 													%>
 												<x:forEach select="$govDoc//pdflist/pdfdata" var="pdfdata" >
@@ -1161,35 +1160,6 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 		                                            <span>查看正文<em>*</em>：</span>
 		                                            <%if(pdfList.size()>1) {%>
 		                                             	<a href="" onclick="" data-popup=".popup-marking" class="open-popup">批阅该文</a>
-		                                             	<div class="popup popup-marking">   <!-- 批阅正文弹出框 -->
-													        <div class="marking-content">
-													            <p>请选择批阅的正文版本</p>
-													            <div>
-													                <ul class="webapp-leaderday-new">
-													                   <x:forEach select="$govDoc//pdflist/pdfdata" var="pdfdata_List" >
-																			<c:set var="pdfid_list" ><x:out select="$pdfdata_List/pdfid/text()" /></c:set>
-																			<c:set var="pdfrealname_list" ><x:out select="$pdfdata_List/pdfrealname/text()" /></c:set>
-																			<c:set var="pdfsavename_list" ><x:out select="$pdfdata_List/pdfsavename/text()" /></c:set>
-																			<c:set var="pdfwjjmc_list" ><x:out select="$pdfdata_List/pdfwjjmc/text()" /></c:set>
-																			<c:set var="pdfpzr_list" ><x:out select="$pdfdata_List/pdfpzr/text()" /></c:set>
-																			<c:set var="pdfpzhj_list" ><x:out select="$pdfdata_List/pdfpzhj/text()" /></c:set>
-															                    <li >
-															                        <em class="blue"></em>
-															                        <p class="time blue"><span>2016-08-16</span><span>09:22</span></p>
-															                        <div class="leader-content leader-content-mark">
-															                            <p class="leader-content-d"><a href="##">${pdfrealname_list}</a></p>
-															                            <p class="leader-content-e">${pdfpzr_list}</p>
-															                            <div class="leader-mark">
-															                              <span class="radius-btn-current" onclick="signPdf('${pdfrealname_list}','${pdfsavename_list}','${pdfwjjmc_list}','${pdfpzr_list}','${pdfpzhj_list}','${pdfid_list}')">批阅该文</span>
-															                            </div>
-															                        </div>
-															                    </li>
-													                    </x:forEach>
-													                    
-													                </ul>
-													            </div>
-													        </div>
-													    </div>
 		                                            <%}else{ %>
 		                                            	<a href="" onclick="signPdf('${pdfrealname}','${pdfsavename}','${pdfwjjmc}','${pdfpzr}','${pdfpzhj}','${pdfid}')"   class="open-popup">批阅该文</a>
 		                                            <%} %>
@@ -1738,6 +1708,54 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 	<input type="hidden" name="fromFlag" value="<%=fromFlag%>">
 </form>
 <!----------加签结束---------->
+<c:if test="${not empty govDocXml}">
+	<x:parse xml="${govDocXml}" var="govDoc_pdfList"/>
+	<% String  oaPdf = (String)request.getSession().getAttribute("oaPdf"); //判断是否需要正文批注，系统设置设置
+      String  canEdit = (String) request.getAttribute("canEdit");   //是否可编辑，节点设置
+      ArrayList pdfList = new ArrayList();
+      String workStatus = request.getParameter("workStatus");
+    //  String apptype = new WebAppAuth().getAppType(request);
+     if("1".equals(oaPdf)&&"true".equals(canEdit)&&"evo".equals(apptype)&&("0".equals(workStatus)||"2".equals(workStatus))){  
+	%>
+	<x:forEach select="$govDoc_pdfList//pdflist/pdfdata" var="pdfdata" >
+	<c:set var="pdfid" ><x:out select="$pdfdata/pdfid/text()" /></c:set>
+	<%
+    	pdfList.add(pageContext.getAttribute("pdfid").toString());
+	%>
+	<p><%=pdfList.size() %></p>
+	</x:forEach>
+        <%if(pdfList.size()>1) {%>
+             <div class="popup popup-marking popup-location">   <!-- 批阅正文弹出框 -->
+		       <div class="marking-content">
+		           <p>请选择批阅的正文版本</p>
+		           <div>
+		               <ul class="webapp-leaderday-new">
+		                  <x:forEach select="$govDoc_pdfList//pdflist/pdfdata" var="pdfdata_List" >
+							<c:set var="pdfid_list" ><x:out select="$pdfdata_List/pdfid/text()" /></c:set>
+							<c:set var="pdfrealname_list" ><x:out select="$pdfdata_List/pdfrealname/text()" /></c:set>
+							<c:set var="pdfsavename_list" ><x:out select="$pdfdata_List/pdfsavename/text()" /></c:set>
+							<c:set var="pdfwjjmc_list" ><x:out select="$pdfdata_List/pdfwjjmc/text()" /></c:set>
+							<c:set var="pdfpzr_list" ><x:out select="$pdfdata_List/pdfpzr/text()" /></c:set>
+							<c:set var="pdfpzhj_list" ><x:out select="$pdfdata_List/pdfpzhj/text()" /></c:set>
+			                    <li >
+			                        <em class="blue"></em>
+			                        <p class="time blue"><span>2016-08-16</span><span>09:22</span></p>
+			                        <div class="leader-content leader-content-mark">
+			                            <p class="leader-content-d"><a href="##">${pdfrealname_list}</a></p>
+			                            <p class="leader-content-e">${pdfpzr_list}</p>
+			                            <div class="leader-mark">
+			                              <span class="radius-btn-current" onclick="signPdf('${pdfrealname_list}','${pdfsavename_list}','${pdfwjjmc_list}','${pdfpzr_list}','${pdfpzhj_list}','${pdfid_list}')">批阅该文</span>
+			                            </div>
+			                        </div>
+			                    </li>
+		                   </x:forEach>
+		               </ul>
+		           </div>
+       			</div>
+   			</div>
+   		<%}
+        }%>
+</c:if>
 <script type="text/javascript" src="<%=rootPath%>/clientview/custmenu/js/custmenu.js"></script>
 <script type="text/javascript" src="<%=rootPath%>/clientview/js/subClick.js"></script>
 <script type="text/javascript" src="<%=rootPath%>/clientview/template115/js/alert/zepto.alert.js"></script>
@@ -1764,6 +1782,14 @@ String fromFlag = com.whir.component.security.crypto.EncryptUtil.htmlcode(reques
 	    // body...
 	    $$('.new-popover').css("display","none");
 	    $$('.gray-back').css("display","none");
+	  })
+	   
+	   //批阅正文弹出框关闭
+	   $$("body").click(function(){
+		     if($(".popup-location").is(":hidden")){
+			  }else{
+			    myApp.closeModal(".popup");
+			}
 	  })
 
   //解决input输入框的问题

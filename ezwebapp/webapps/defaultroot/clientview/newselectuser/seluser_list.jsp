@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="../common/taglibs.jsp" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/xml" prefix="x" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page import="com.whir.component.security.crypto.EncryptUtil"%>
 <%
 	String selectType = EncryptUtil.htmlcode(EncryptUtil.sqlcode(request.getParameter("selectType")));
@@ -58,7 +61,7 @@
                                   <span class="bold">·</span>
                                   <span>${orgName }</span>
                               </div>
-                              <div class="my-part-tree" id="myUserLi">
+                              <div class="my-part-tree list-block" id="myUserLi">
                                   <ul>
                                   	<c:if test="${not empty docXml}">
                                   	<x:parse xml="${docXml}" var="personDoc"/>
@@ -90,7 +93,7 @@
                       <!-- Tab 2 -->
                       <div id="userList" class="tab">
                           <div class="select-top">
-                              <div class="my-part-tree my-part-treeo">
+                              <div class="my-part-tree list-block my-part-treeo">
                                   <ul id="userListLi">
                                   </ul>
                                   <aside class="wh-load-box" style="display: block">
@@ -544,7 +547,7 @@
 	                var result = '<div id='+tabId+'  class="tab '+showCss+'">';
 	                var personLis = '';
                 	if(personArray){
-                		personLis = '<div class="select-top"><div class="my-part-tree my-part-treeo"><ul id='+ulId+'>';
+                		personLis = '<div class="select-top"><div class="my-part-tree list-block my-part-treeo"><ul id='+ulId+'>';
 				        for(var j=0,length=personArray.length;j<length;j++){
 				        	//id='userLi_'+personArray[j].userId
 				        	if(showFlag == 1){
@@ -770,7 +773,7 @@
     			var userArray = jsonData.data0;
     			if(userArray.length>0){
     				var empLivingPhoto = "";
-    				var userHtml = '<div id='+tabId+' class="tab '+showCss+'"><div class="select-top"><div class="my-part-tree my-part-treeo"><ul id='+ulId+'>';
+    				var userHtml = '<div id='+tabId+' class="tab '+showCss+'"><div class="select-top"><div class="my-part-tree my-part-treeo list-block"><ul id='+ulId+'>';
     				for(var i = 0; i < userArray.length; i++){
     					if(showFlag == 1){
     						empId = userArray[i].userId+',';

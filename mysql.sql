@@ -94,3 +94,25 @@ alter table org_employee add empDuty varchar(50);
 alter table org_employee modify empDuty varchar(50) CHARACTER SET utf8;
 insert  into `ezmobile_patchinfo`(`patch_Version`,`patch_Name`,`patch_Time`,`patch_editinfo`,`PATCH_EVO`,`isclientuse`) 
 values ('1.2.3','1.2.3_webapp_20170724',sysdate(),'WanhuezOFFICE','0','0');
+
+
+
+
+
+
+
+
+
+create table ezmobile_remindlist(
+    id      float(20) not null auto_increment,
+    useraccount  varchar(300),
+    module  varchar(30),
+    title   varchar(1000),
+    paramstring   varchar(1000),
+    isread        varchar(1),
+    pushdatetime  datetime,
+    PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table org_organization  MODIFY COLUMN orgParentOrgId decimal(20);
+insert  into `ezmobile_patchinfo`(`patch_Version`,`patch_Name`,`patch_Time`,`patch_editinfo`,`PATCH_EVO`,`isclientuse`) 
+values ('1.2.4','1.2.4_webapp_20170731',sysdate(),'WanhuezOFFICE','0','0');
