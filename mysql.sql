@@ -116,3 +116,17 @@ create table ezmobile_remindlist(
 alter table org_organization  MODIFY COLUMN orgParentOrgId decimal(20);
 insert  into `ezmobile_patchinfo`(`patch_Version`,`patch_Name`,`patch_Time`,`patch_editinfo`,`PATCH_EVO`,`isclientuse`) 
 values ('1.2.4','1.2.4_webapp_20170731',sysdate(),'WanhuezOFFICE','0','0');
+
+
+
+
+
+
+
+
+
+
+
+
+insert  into `ezmobile_patchinfo`(`patch_Version`,`patch_Name`,`patch_Time`,`patch_editinfo`,`PATCH_EVO`,`isclientuse`) 
+values ('1.2.5','1.2.5_webapp_20170804',sysdate(),'WanhuezOFFICE','0','0');

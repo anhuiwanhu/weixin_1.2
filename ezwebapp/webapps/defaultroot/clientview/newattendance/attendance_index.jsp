@@ -554,12 +554,12 @@ function getSelDate() {
 	//获取位置信息(通过h5)
 	 function getMyLocationByH(){
 		//判断是否支持 获取本地位置
-		 /*   if (navigator.geolocation){
+		 if (navigator.geolocation){
 		    	navigator.geolocation.getCurrentPosition(showPosition);
 		  }else{
 			  x.innerHTML="浏览器不支持定位.";
-		  }*/
-		var latlng = "";
+		  }
+		  /*   var latlng = "";
 		  var latitude = 31.824254;
 		  var longitude = 117.296121;
 		    
@@ -570,7 +570,7 @@ function getSelDate() {
 				    });
 	    setTimeout(function() {
 			 myLocation(31.82372,117.3023,"测试位置");
-	    }, 1500);
+	    }, 1500);*/
 	     
 	 }
 	 

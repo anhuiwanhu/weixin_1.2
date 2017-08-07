@@ -187,3 +187,36 @@ ezOFFICE12.2产品(已集成补丁至12.2.0.06）+ evo+1.2.3
 
 6、验证系统功能
 
+
+
+
+
+
+
+
+
+
+
+补丁适用范围：
+
+ezOFFICE12.2产品(已集成补丁至12.2.0.06）+ evo+1.2.4
+
+操作步骤：
+
+1、停evo+服务
+
+2、备份生产环境程序
+
+3、覆盖产品补丁包至evo+安装目录中..\webapps
+
+4、..\webapps\defaultroot\WEB-INF\web.xml文件中删除：
+
+  <filter-mapping>  
+		<filter-name>AuthFilter</filter-name>  
+		<url-pattern>*.jpg</url-pattern>  
+  </filter-mapping>
+
+5、清除服务端缓存，启动evo+服务
+
+6、验证系统功能
+
