@@ -217,7 +217,7 @@
     function myfun() {
     	loadSubLogList();
 		loadLogtype ='0';
-    	var index = $$('.webapplist li').length;
+    	var index = $$('.webapplist li').length;//我的日志
     	if(index < 15){
     		 $$('.wh-load-md').hide();
     	}else{
@@ -485,9 +485,20 @@
       $$(".footer-log>a").removeClass("fbtn-matter").addClass("fbtn-cancle");
       _this.removeClass("fbtn-cancle").addClass("fbtn-matter");
       $$(".section-log").hide().eq(index).show();
-	  //if(index==1){
-		  //loadSubLogList();
-	  //}
+	  if(index==1){
+		  if(subLogmaxItems<15){
+			  $$('.wh-load-md').hide();
+		  }else{
+			  $$('.wh-load-md').show();
+		  }
+	  }
+	  if(index==0){
+		  if(myLogmaxItems>15){
+			  $$('.wh-load-md').show();
+		  }else{
+			  $$('.wh-load-md').hide();
+		  }
+	  }
     });  
  
 

@@ -516,7 +516,7 @@
 					if(jsonData.result == 'success'){
 						var classOwnerIds = jsonData.data1;
 						var checkExamin = jsonData.data2;
-						if(checkExamin == '1'){
+						if(checkExamin == '1'){//需要审核的版块
 							if(classOwnerIds == userId){
 								myApp.alert('发帖成功！', function () {
 				      				window.history.back();
@@ -526,6 +526,10 @@
 				      				window.history.back();
 				      			});	
 							}
+						}else{//不需要审核的版块
+							myApp.alert('发帖成功！', function () {
+				      			window.history.back();
+				      		});	
 						}
 						//location.href="/defaultroot/post/index.controller";
 					}else if(jsonData.result == 'fail'){
