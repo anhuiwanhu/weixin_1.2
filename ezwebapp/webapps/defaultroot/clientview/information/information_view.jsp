@@ -73,7 +73,7 @@
 					<x:forEach select="$doc//picList/picSaveName" var="pic" varStatus="status">
 							<c:set var="filename"><x:out select="$pic/text()"/></c:set>
 							<input type="hidden" name="imgName" value="${filename }"  >
-							<img id="${fn:substring(filename,0,25)}" class="pb-standalone" width="100%"/>
+							<img id="${fn:substring(filename,0,25)}" class="pb-standalone" width="100%" height="500"/>
 						</x:forEach>
 				</c:if>
 				<c:choose>
@@ -260,7 +260,7 @@
 		        '<div class="left sliding">' +
 		          '<a href="#" class="link close-popup photo-browser-close-link">' +
 		            '<i class="fa fa-angle-left"></i>' +
-		            '<span>{{backLinkText}}</span>{{/if}}' +
+		            '<span>关闭</span>{{/if}}' +
 		          '</a>' +
 		        '</div>' +
 		        '<div class="center sliding">' +
@@ -419,6 +419,8 @@
 					data : {"fileName":filename,"name":filename,"path":"information/"+filename.substring(0,6)},
 					success : function(data){
 						$('#'+id).attr("src","<%=rootPath%>"+data);
+						$('#'+id).attr("width","100%");
+						$('#'+id).attr("height","");
 					},
 					error : function (xhr,type){
 						//alert('数据查询异常！');

@@ -56,10 +56,10 @@ String downloadType = PropertyUtil.getPropertyByKey("downloadType");
 if(downloadType==null || "null".equals("downloadType") || "".equals(downloadType)){
 	downloadType = "1";
 }
-String zwType="0";
+/*String zwType="0";
 if(moduleName.equals("govdocumentmanager") && realtime.equals("1")){
 	zwType="1";
-}
+}*/
 %>
 <div class="wh-article-atta">
 <%
@@ -85,7 +85,7 @@ for(int i = 0,length = realFileNamesArray.length ;i < length ;i ++){
 	downloadFileLink += "&isDecode=true";
 	downloadFileLink += "&realtime="+realtime;
 	//System.out.println("-downloadFileLink------>"+downloadFileLink);
-	if(apptype.equals("evo") && (downloadType.equals("1")||zwType.equals("1"))){
+	if(apptype.equals("evo") && downloadType.equals("1")){
 		String fileType = request.getParameter("fileType") != null ? request.getParameter("fileType") : "";
 %>
 	

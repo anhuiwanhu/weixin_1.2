@@ -165,8 +165,8 @@
 						readEm = '已读';
 					}
 					var orgName = jsonData.data0[i].org;
-                	if(orgName.length > 12){
-                		orgName = orgName.substring(0,12)+'...';
+                	if(orgName.length > 6){
+                		orgName = orgName.substring(0,6)+'...';
                 	}
 					readhtml += '<li><a>'
                              + '<span class="fl">'+jsonData.data0[i].name+'['+orgName+']</span>'
